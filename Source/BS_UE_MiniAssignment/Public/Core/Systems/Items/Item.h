@@ -15,8 +15,8 @@ public:
 	// Sets default values for this actor's properties
 	AItem();
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly) UStaticMeshComponent* ItemMesh;
-	bool bIsHeld;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ItemClass | Component") UStaticMeshComponent* ItemMesh;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ItemClass | Physics") bool bIsHeld;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

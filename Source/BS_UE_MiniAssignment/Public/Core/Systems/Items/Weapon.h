@@ -17,6 +17,5 @@ class BS_UE_MINIASSIGNMENT_API AWeapon : public AItem
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite) EWeaponType WeaponType; 
-	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapons | Types") EWeaponType WeaponType; 
 };
