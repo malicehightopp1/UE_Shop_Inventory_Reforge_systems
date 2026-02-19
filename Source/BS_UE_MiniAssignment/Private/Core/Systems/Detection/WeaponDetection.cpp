@@ -4,6 +4,7 @@
 #include "Core/Systems/Detection/WeaponDetection.h"
 #include "Components/BoxComponent.h"
 #include "Core/Systems/Items/Weapon.h"
+#include "Core/Systems/Reforging/ReforgeData.h"
 
 // Sets default values
 AWeaponDetection::AWeaponDetection()
@@ -19,22 +20,13 @@ void AWeaponDetection::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 
 	if (!ItemDetected)
 	{
-		UE_LOG(LogTemp, Display, TEXT("Not a reforgable Item"));
+		UE_LOG(LogTemp, Error, TEXT("Not a reforgable Item"));
 		return;
 	}
-	
-	switch (ItemDetected->WeaponType)
-	{
-	case EWeaponType::Sword:
-		UE_LOG(LogTemp, Display, TEXT("Detected Sword"));
-		break;
-	case EWeaponType::Axe:
-		UE_LOG(LogTemp, Display, TEXT("Detected Axe"));
-		break;
-	case EWeaponType::Hammer:
-		UE_LOG(LogTemp, Display, TEXT("Detected Hammer"));
-		break;
-	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Reforging Item..."));
+	ItemDetected->WeaponStats = ItemDetected->ReforgeData->GetRandomReforge();
+	UE_LOG(LogTemp, Warning, TEXT("Reforged Item!"));
 }
 // Called when the game starts or when spawned
 void AWeaponDetection::BeginPlay()

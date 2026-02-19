@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Item.generated.h"
 
+class USphereComponent;
 class UWidgetComponent;
 
 UCLASS()
@@ -19,10 +20,10 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ItemClass | Component") UStaticMeshComponent* ItemMesh;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ItemClass | Physics") bool bIsHeld;
-	//UPROPERTY(EditDefaultsOnly, Category = "ItemClass | Component") UWidgetComponent* WidgetComponent;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
 
 public:	
 	// Called every frame
