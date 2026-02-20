@@ -7,7 +7,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Core/Systems/Interaction/InteractionInterface.h"
 #include "Core/Systems/Items/Item.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -69,6 +71,9 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &AMyCharacter::Grab);
 		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Completed, this, &AMyCharacter::Release);
+		
+		//Interaction
+		EnhancedInputComponent->BindAction(InteractionAction, ETriggerEvent::Started, this, &AMyCharacter::Interact);
 	}
 }
 void AMyCharacter::Move(const FInputActionValue& Value)
@@ -84,6 +89,24 @@ void AMyCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
+void AMyCharacter::Interact(const FInputActionValue& Value) //interaction 
+{
+	FHitResult* Hit = new FHitResult();
+	FVector start = CameraComp->GetComponentLocation();
+	FVector end = start + (CameraComp->GetForwardVector() * 500);
+	
+	UKismetSystemLibrary::SphereTraceSingle(this, start, end, 20.0f, UEngineTypes::ConvertToTraceType(ECC_Visibility), 
+		false, TArray<AActor*>(), EDrawDebugTrace::ForDuration, *Hit, true);
+	
+	if (Hit->GetActor() != nullptr)
+	{
+		if (Hit->GetActor()->GetClass()->ImplementsInterface(UInteractInterface::StaticClass())) //if the actor that was hit has a interface
+		{
+			Cast<IInteractInterface>(Hit->GetActor())->InteractPure(this);
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *Hit->GetActor()->GetName());
+		}
+	}
+}
 void AMyCharacter::Grab()
 {
 	FHitResult Hit;
@@ -138,4 +161,3 @@ void AMyCharacter::Look(const FInputActionValue& Value)
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
-

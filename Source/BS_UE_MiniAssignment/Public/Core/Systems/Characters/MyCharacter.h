@@ -36,6 +36,7 @@ private:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	UFUNCTION() void Look(const FInputActionValue& Value);
 	UFUNCTION() void Move(const FInputActionValue& Value);
+	UFUNCTION() void Interact(const FInputActionValue& Value);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// funtions - item pickup
@@ -52,6 +53,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Player | Player Input") UInputAction* MoveAction;
 	UPROPERTY(EditDefaultsOnly, Category = "Player | Player Input") UInputAction* JumpAction;
 	UPROPERTY(EditDefaultsOnly, Category = "Player | Player Input") UInputAction* GrabAction;
+	UPROPERTY(EditDefaultsOnly, Category = "Player | Player Input") UInputAction* InteractionAction;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// Components
