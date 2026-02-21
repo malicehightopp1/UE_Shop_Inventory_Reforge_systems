@@ -19,7 +19,7 @@ public:
 	// Sets default values for this character's properties
 	AMyCharacter();
 
-	UPROPERTY(VisibleAnywhere) UPhysicsHandleComponent* PhysicsHandleComp;
+	UPROPERTY(VisibleAnywhere) UPhysicsHandleComponent* PhysicsHandleComp; //physics component for items
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

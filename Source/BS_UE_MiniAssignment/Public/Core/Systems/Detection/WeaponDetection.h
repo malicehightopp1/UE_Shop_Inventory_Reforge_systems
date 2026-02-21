@@ -21,18 +21,7 @@ public:
 	// Sets default values for this actor's properties
 	AWeaponDetection();
 	
-	UPROPERTY(EditDefaultsOnly, Category = "UI") UWidgetComponent* ReforgeTrigger;
-	UFUNCTION(BlueprintCallable, Category = "UI") void TriggerReforge();	
-	UPROPERTY() AActor* CurrentWeapon;
-	UFUNCTION() void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	UFUNCTION() void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	UPROPERTY(EditDefaultsOnly, Category = "Detection | Components ") UBoxComponent* BoxComp;
-	
-	//UFUNCTION() void OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	//UFUNCTION() void OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	//UPROPERTY(EditDefaultsOnly, Category = "Detection | Components ") USphereComponent* SphereComp; //FORWARD DECLARE DO IT EVERYTIME
-	
-	virtual void InteractPure(AMyCharacter* player) override;
+	virtual void InteractPure(AMyCharacter* player) override; //player interaction
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -40,5 +29,25 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+private:
+	//Reforge Calling
+	UFUNCTION(BlueprintCallable, Category = "UI") void TriggerReforge();	
+	UFUNCTION() void UpdateWidgetUI();
 	
+	//Overlap detection - Weapon and Player
+	UFUNCTION() void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION() void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	UFUNCTION() void OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION() void OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	
+	//UI
+	UPROPERTY(EditDefaultsOnly, Category = "UI") UWidgetComponent* ReforgeTrigger;
+	
+	//Reforging
+	UPROPERTY() AActor* CurrentWeapon;
+	UPROPERTY(EditDefaultsOnly, Category = "Detection | Reforging") bool bPlayerIsInRange = false;
+	
+	//Components
+	UPROPERTY(EditDefaultsOnly, Category = "Detection | Components ") UBoxComponent* BoxComp;
+	UPROPERTY(EditDefaultsOnly, Category = "Detection | Components ") USphereComponent* SphereComp;
 };

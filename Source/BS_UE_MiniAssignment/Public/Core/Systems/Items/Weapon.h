@@ -16,4 +16,5 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapons | Types") EWeaponType WeaponType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons | Reforge") UReforgeData* ReforgeData;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons | Reforge") FReforgeDataChanges WeaponStats;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapons | Reforge") FString WeaponName;
 };

@@ -10,7 +10,6 @@ USTRUCT(BlueprintType)
 struct FReforgeDataChanges //What could happen in any given reroll of stats
 {
 	GENERATED_BODY()
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reforge") FString Prefixes; //name EX. Godly, Broken, Damaged, ETC
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Reforge") float StatMultiplier; //random stat multiplier
 };

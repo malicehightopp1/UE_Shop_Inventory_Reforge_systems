@@ -9,7 +9,6 @@
 #include "Core/Systems/Items/Weapon.h"
 #include "Core/Systems/Reforging/ReforgeData.h"
 
-#pragma region Setup Components
 // Sets default values
 AWeaponDetection::AWeaponDetection()
 {
@@ -20,8 +19,8 @@ AWeaponDetection::AWeaponDetection()
 	BoxComp->SetupAttachment(RootComponent);
 	BoxComp->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 	
-	//SphereComp->CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-	//SphereComp->SetupAttachment(RootComponent); //dont attach to Box Comp it crashes
+	SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent")); //not a -> its a =
+	SphereComp->SetupAttachment(BoxComp);
 	
 	ReforgeTrigger = CreateDefaultSubobject<UWidgetComponent>(TEXT("ReforgeTrigger"));
 	ReforgeTrigger->SetupAttachment(BoxComp);
@@ -36,49 +35,33 @@ void AWeaponDetection::BeginPlay()
 	BoxComp->OnComponentEndOverlap.AddDynamic(this, &AWeaponDetection::OnOverlapEnd);
 	
 	//player detection and UI turn on
-	//SphereComp->OnComponentBeginOverlap.AddDynamic(this, &AWeaponDetection::OnSphereOverlapBegin);
-	//SphereComp->OnComponentEndOverlap.AddDynamic(this, &AWeaponDetection::OnSphereOverlapEnd);
+	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &AWeaponDetection::OnSphereOverlapBegin);
+	SphereComp->OnComponentEndOverlap.AddDynamic(this, &AWeaponDetection::OnSphereOverlapEnd);
 }
 void AWeaponDetection::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
-#pragma endregion
 #pragma region weapon Detection
 void AWeaponDetection::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (auto* ItemDetected = Cast<AWeapon>(OtherActor))
 	{
 		CurrentWeapon = ItemDetected;
+		UpdateWidgetUI();
+		UE_LOG(LogTemp, Error, TEXT("weapon on the Anvil"));
 	}
 }
 void AWeaponDetection::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (OtherActor == CurrentWeapon)
 	{
-		UE_LOG(LogTemp, Error, TEXT("place holder"));
+		CurrentWeapon = nullptr;
+		UpdateWidgetUI();
+		UE_LOG(LogTemp, Error, TEXT("No weapon on the Anvil"));
 	}
 }
 #pragma endregion
-// void AWeaponDetection::OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-// {
-// 	if (auto* player = Cast<AMyCharacter>(OtherActor))
-// 	{
-// 		UE_LOG(LogTemp, Error, TEXT("Player detected"));
-// 		ReforgeTrigger->SetVisibility(true);
-// 	}
-// }
-
-// void AWeaponDetection::OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-// {
-// 	if (OtherActor == nullptr)
-// 	{
-// 		UE_LOG(LogTemp, Error, TEXT("Player left"));
-// 		ReforgeTrigger->SetVisibility(false);
-// 	}
-// }
-
 #pragma region Reforge Interaction
 void AWeaponDetection::InteractPure(AMyCharacter* player)
 {
@@ -106,5 +89,41 @@ void AWeaponDetection::TriggerReforge()
 	UE_LOG(LogTemp, Warning, TEXT("Reforging Item..."));
 	Weapon->WeaponStats = Weapon->ReforgeData->GetRandomReforge();
 	UE_LOG(LogTemp, Warning, TEXT("Reforged Item!"));
+	
+	if (GEngine)
+	{
+		FString debugmsg = FString::Printf(TEXT("%s %s --- StatMultiply: %fx"), *Weapon->WeaponStats.Prefixes, *Weapon->WeaponName, Weapon->WeaponStats.StatMultiplier);
+		
+		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Cyan, debugmsg);
+	}
+}
+#pragma endregion
+#pragma region Reforge UI
+void AWeaponDetection::OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherActor->IsA(AMyCharacter::StaticClass()))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player detected"));
+		bPlayerIsInRange = true;
+		UpdateWidgetUI();
+	}
+}
+void AWeaponDetection::OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor && OtherActor->IsA(AMyCharacter::StaticClass()))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player left"));
+		bPlayerIsInRange = false;
+		UpdateWidgetUI();
+	}
+}
+void AWeaponDetection::UpdateWidgetUI()
+{
+	bool bShouldShowUI = (bPlayerIsInRange && CurrentWeapon != nullptr);
+	
+	if (ReforgeTrigger)
+	{
+		ReforgeTrigger->SetVisibility(bShouldShowUI);
+	}
 }
 #pragma endregion

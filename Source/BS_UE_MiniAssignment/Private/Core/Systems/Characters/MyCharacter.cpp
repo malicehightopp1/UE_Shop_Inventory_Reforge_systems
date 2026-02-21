@@ -6,7 +6,6 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "Core/Systems/Interaction/InteractionInterface.h"
 #include "Core/Systems/Items/Item.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -39,7 +38,6 @@ void AMyCharacter::BeginPlay()
 		}
 	}
 }
-
 // Called every frame
 void AMyCharacter::Tick(float DeltaTime)
 {
@@ -51,7 +49,7 @@ void AMyCharacter::Tick(float DeltaTime)
 		PhysicsHandleComp->SetTargetLocation(TargetLocation);
 	}
 }
-
+#pragma region Input Setup
 // Called to bind functionality to input
 void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -76,19 +74,8 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(InteractionAction, ETriggerEvent::Started, this, &AMyCharacter::Interact);
 	}
 }
-void AMyCharacter::Move(const FInputActionValue& Value)
-{
-	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
-	{
-		// add movement 
-		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
-		AddMovementInput(GetActorRightVector(), MovementVector.X);
-	}
-}
-
+#pragma endregion
+#pragma region Interaction
 void AMyCharacter::Interact(const FInputActionValue& Value) //interaction 
 {
 	FHitResult* Hit = new FHitResult();
@@ -149,6 +136,20 @@ void AMyCharacter::Release()
 		PhysicsHandleComp->ReleaseComponent();
 	}
 }
+#pragma endregion 
+#pragma region Locomotion
+void AMyCharacter::Move(const FInputActionValue& Value)
+{
+	// input is a Vector2D
+	FVector2D MovementVector = Value.Get<FVector2D>();
+
+	if (Controller != nullptr)
+	{
+		// add movement 
+		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
+		AddMovementInput(GetActorRightVector(), MovementVector.X);
+	}
+}
 void AMyCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
@@ -161,3 +162,4 @@ void AMyCharacter::Look(const FInputActionValue& Value)
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
+#pragma endregion
