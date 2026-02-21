@@ -80,9 +80,9 @@ void AMyCharacter::Interact(const FInputActionValue& Value) //interaction
 {
 	FHitResult* Hit = new FHitResult();
 	FVector start = CameraComp->GetComponentLocation();
-	FVector end = start + (CameraComp->GetForwardVector() * 500);
+	FVector end = start + (CameraComp->GetForwardVector() *300);
 	
-	UKismetSystemLibrary::SphereTraceSingle(this, start, end, 20.0f, UEngineTypes::ConvertToTraceType(ECC_Visibility), 
+	UKismetSystemLibrary::SphereTraceSingle(this, start, end, 5.0f, UEngineTypes::ConvertToTraceType(ECC_Visibility), 
 		false, TArray<AActor*>(), EDrawDebugTrace::ForDuration, *Hit, true);
 	
 	if (Hit->GetActor() != nullptr)
@@ -100,7 +100,10 @@ void AMyCharacter::Grab()
 	FVector start = CameraComp->GetComponentLocation();
 	FVector end = start + (CameraComp->GetForwardVector() * 500);
 
-	if (GetWorld()->LineTraceSingleByChannel(Hit, start,end, ECC_Visibility))
+	ECollisionChannel GrabChannel = ECollisionChannel::ECC_Visibility;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+	if (GetWorld()->LineTraceSingleByChannel(Hit, start,end, GrabChannel, CollisionParams))
 	{
 		AItem* HitItem = Cast<AItem>(Hit.GetActor());
 		

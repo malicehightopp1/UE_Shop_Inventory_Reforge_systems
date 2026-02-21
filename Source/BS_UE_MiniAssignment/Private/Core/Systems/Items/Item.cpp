@@ -17,7 +17,6 @@ AItem::AItem()
 	ItemMesh->SetSimulatePhysics(true);
 	ItemMesh->SetEnableGravity(true);
 	ItemMesh->SetCollisionProfileName(TEXT("Physics Actor"));
-
 	bIsHeld = false;
 }
 

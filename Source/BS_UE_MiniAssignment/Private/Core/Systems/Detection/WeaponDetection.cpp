@@ -72,7 +72,9 @@ void AWeaponDetection::InteractPure(AMyCharacter* player)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("No Reforgable item on anvil"));
+		FString debugmsgFail = FString::Printf(TEXT("Item is Not a reforge Item!!"));
+		
+		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Cyan, debugmsgFail);
 	}
 }
 
@@ -85,10 +87,7 @@ void AWeaponDetection::TriggerReforge()
 		UE_LOG(LogTemp, Error, TEXT("Not a reforgable Item"));
 		return;
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("Reforging Item..."));
 	Weapon->WeaponStats = Weapon->ReforgeData->GetRandomReforge();
-	UE_LOG(LogTemp, Warning, TEXT("Reforged Item!"));
 	
 	if (GEngine)
 	{

@@ -24,11 +24,9 @@ UENUM(BlueprintType) enum class EWeaponType : uint8 //what type my weapon is
 {
 	Sword,
 	Axe,
-	Hammer
+	Hammer,
+	Shield
 };
-/**
- * 
- */
 UCLASS()
 class UDataInfo : public UObject
 {
