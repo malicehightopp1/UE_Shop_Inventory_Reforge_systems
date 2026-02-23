@@ -42,6 +42,7 @@ private:
 	
 	//UI
 	UPROPERTY(EditDefaultsOnly, Category = "UI") UWidgetComponent* ReforgeTrigger;
+	UPROPERTY(EditDefaultsOnly, Category = "UI") UWidgetComponent* ReforgeInformation;
 	
 	//Reforging
 	UPROPERTY() AActor* CurrentWeapon;

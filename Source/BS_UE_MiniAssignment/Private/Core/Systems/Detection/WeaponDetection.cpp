@@ -26,6 +26,11 @@ AWeaponDetection::AWeaponDetection()
 	ReforgeTrigger->SetupAttachment(BoxComp);
 	ReforgeTrigger->SetWidgetSpace(EWidgetSpace::Screen); //setting the widget to be screen
 	ReforgeTrigger->SetVisibility(false); //turn off ui as start
+
+	ReforgeInformation = CreateDefaultSubobject<UWidgetComponent>(TEXT("ReforgeInformation"));
+	ReforgeInformation->SetupAttachment(BoxComp);
+	ReforgeInformation->SetWidgetSpace(EWidgetSpace::Screen);
+	ReforgeInformation->SetVisibility(false);
 }
 void AWeaponDetection::BeginPlay()
 {
@@ -91,6 +96,7 @@ void AWeaponDetection::TriggerReforge()
 	
 	if (GEngine)
 	{
+		
 		FString debugmsg = FString::Printf(TEXT("%s %s --- StatMultiply: %fx"), *Weapon->WeaponStats.Prefixes, *Weapon->WeaponName, Weapon->WeaponStats.StatMultiplier);
 		
 		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Cyan, debugmsg);
