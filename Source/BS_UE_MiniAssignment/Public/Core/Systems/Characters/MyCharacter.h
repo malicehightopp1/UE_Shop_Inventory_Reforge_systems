@@ -8,6 +8,7 @@
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "MyCharacter.generated.h"
 
+class UWidgetComponent;
 class UCameraComponent;
 
 UCLASS()
@@ -20,6 +21,7 @@ public:
 	AMyCharacter();
 
 	UPROPERTY(VisibleAnywhere) UPhysicsHandleComponent* PhysicsHandleComp; //physics component for items
+	UPROPERTY(EditDefaultsOnly, Category = "Player | Components") UUserWidget* PlayerWidget;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -43,8 +45,7 @@ private:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	UFUNCTION() void Grab();
 	UFUNCTION() void Release();
-
-
+	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// Inputs
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,4 +61,5 @@ private:
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///
 	UPROPERTY(VisibleAnywhere, Category = "Player | Components") UCameraComponent* CameraComp;
+	
 };

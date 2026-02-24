@@ -10,6 +10,7 @@
 #include "Core/Systems/Reforging/ReforgeData.h"
 
 // Sets default values
+
 AWeaponDetection::AWeaponDetection()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -27,6 +28,7 @@ AWeaponDetection::AWeaponDetection()
 	ReforgeTrigger->SetWidgetSpace(EWidgetSpace::Screen); //setting the widget to be screen
 	ReforgeTrigger->SetVisibility(false); //turn off ui as start
 
+	//displaying reforge information for the plyer
 	ReforgeInformation = CreateDefaultSubobject<UWidgetComponent>(TEXT("ReforgeInformation"));
 	ReforgeInformation->SetupAttachment(BoxComp);
 	ReforgeInformation->SetWidgetSpace(EWidgetSpace::Screen);

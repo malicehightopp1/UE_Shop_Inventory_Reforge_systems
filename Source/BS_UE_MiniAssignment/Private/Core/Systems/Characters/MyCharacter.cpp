@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Core/Systems/Interaction/InteractionInterface.h"
 #include "Core/Systems/Items/Item.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -24,6 +25,8 @@ AMyCharacter::AMyCharacter()
 	CameraComp->bUsePawnControlRotation = true;
 	
 	PhysicsHandleComp = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
+	
+	PlayerWidget = CreateDefaultSubobject<UUserWidget>("PlayerWidget");
 }
 
 // Called when the game starts or when spawned
@@ -36,6 +39,10 @@ void AMyCharacter::BeginPlay()
 		{
 			Subsystem->AddMappingContext(MyMappingContext, 0);
 		}
+	}
+	if (PlayerWidget)
+	{
+		PlayerWidget->AddToViewport();
 	}
 }
 // Called every frame
