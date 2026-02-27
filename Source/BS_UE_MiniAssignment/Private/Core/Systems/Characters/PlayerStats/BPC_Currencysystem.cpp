@@ -13,14 +13,6 @@ void UBPC_Currencysystem::BeginPlay()
 {
 	Super::BeginPlay();
 	PlayerCurrentCurrency = PlayerMaxCurrency; //for testing coins
-	if (OnCurrencyChange.IsBound())
-	{
-		OnCurrencyChange.Broadcast(PlayerCurrentCurrency); //initial broadcast to set default value
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Current Currency is not bound"));
-	}
 }
 // Called every frame
 void UBPC_Currencysystem::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -37,5 +29,17 @@ void UBPC_Currencysystem::ChangePlayerCurrencey(float CurrencyTochange)
 	{
 		UE_LOG(LogTemp, Warning , TEXT("Ui updated"));
 		OnCurrencyChange.Broadcast(PlayerCurrentCurrency); //telling UI that the value changed
+	}
+}
+void UBPC_Currencysystem::UpdateCurrencyUI()
+{
+	if (OnCurrencyChange.IsBound())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Ui should be set to 1000 on start"));
+		OnCurrencyChange.Broadcast(PlayerCurrentCurrency); //initial broadcast to set default value
+	}
+	else //currently not being broadcasted
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Current Currency is not bound"));
 	}
 }

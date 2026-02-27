@@ -33,16 +33,17 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (PlayerWidget) //adding widget to viewport
+	{
+		PlayerWidget->AddToViewport();
+		UE_LOG(LogTemp, Display, TEXT("Widget added to viewport"));
+	}
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller)) //setting player controller AKA Mapping context on start
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(MyMappingContext, 0);
 		}
-	}
-	if (PlayerWidget)
-	{
-		PlayerWidget->AddToViewport();
 	}
 }
 // Called every frame
@@ -101,6 +102,9 @@ void AMyCharacter::Interact(const FInputActionValue& Value) //interaction
 		}
 	}
 }
+/*
+ * for grabbing objects for physics moving
+ */
 void AMyCharacter::Grab()
 {
 	FHitResult Hit;

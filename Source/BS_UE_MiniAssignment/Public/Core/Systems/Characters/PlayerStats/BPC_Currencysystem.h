@@ -19,9 +19,10 @@ class BS_UE_MINIASSIGNMENT_API UBPC_Currencysystem : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UBPC_Currencysystem();
+	UFUNCTION(BlueprintCallable, Category = "PlayerStats") void ChangePlayerCurrencey(float CurrencyTochange);
+	UFUNCTION(BlueprintCallable, Category = "PlayerStats") void UpdateCurrencyUI();
 	
 	UPROPERTY(EditDefaultsOnly,BlueprintAssignable, Category = "PlayerStats") FOncurrencyChange OnCurrencyChange;
-	UFUNCTION(BlueprintCallable, Category = "PlayerStats") void ChangePlayerCurrencey(float CurrencyTochange);
 
 	UFUNCTION(BlueprintCallable, Category = "PlayerStats") float GetPlayerCurrentCurrency(){return PlayerCurrentCurrency;}
 
