@@ -37,6 +37,7 @@ void AMyCharacter::BeginPlay()
 	{
 		PlayerWidget->AddToViewport();
 		UE_LOG(LogTemp, Display, TEXT("Widget added to viewport"));
+		CurrencySystem->UpdateCurrencyUI(); //update currency UI right after creating the UI
 	}
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller)) //setting player controller AKA Mapping context on start
 	{

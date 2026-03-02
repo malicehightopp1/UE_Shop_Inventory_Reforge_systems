@@ -12,6 +12,7 @@ UBPC_Currencysystem::UBPC_Currencysystem()
 void UBPC_Currencysystem::BeginPlay()
 {
 	Super::BeginPlay();
+	UpdateCurrencyUI(); //call before coins are set to attach to UI
 	PlayerCurrentCurrency = PlayerMaxCurrency; //for testing coins
 }
 // Called every frame
@@ -31,12 +32,12 @@ void UBPC_Currencysystem::ChangePlayerCurrencey(float CurrencyTochange)
 		OnCurrencyChange.Broadcast(PlayerCurrentCurrency); //telling UI that the value changed
 	}
 }
-void UBPC_Currencysystem::UpdateCurrencyUI()
+void UBPC_Currencysystem::UpdateCurrencyUI() //still not being broadcasted 
 {
 	if (OnCurrencyChange.IsBound())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Ui should be set to 1000 on start"));
 		OnCurrencyChange.Broadcast(PlayerCurrentCurrency); //initial broadcast to set default value
+		UE_LOG(LogTemp, Warning, TEXT("Ui should be set to 1000 on start"));
 	}
 	else //currently not being broadcasted
 	{
