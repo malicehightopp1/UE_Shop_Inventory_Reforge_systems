@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CanvasPanel.h"
 #include "Components/WidgetComponent.h"
 #include "Core/Systems/Interaction/InteractionInterface.h"
 #include "Core/Systems/Items/Item.h"

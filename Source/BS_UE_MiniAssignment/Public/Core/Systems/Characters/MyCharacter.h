@@ -9,6 +9,7 @@
 #include "PlayerStats/BPC_Currencysystem.h"
 #include "MyCharacter.generated.h"
 
+class UCanvasPanel;
 class UBPC_Currencysystem;
 class UWidgetComponent;
 class UCameraComponent;
@@ -65,7 +66,6 @@ private:
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// Components
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///
 	UPROPERTY(VisibleAnywhere, Category = "Player | Components") UCameraComponent* CameraComp;
 	
 };
