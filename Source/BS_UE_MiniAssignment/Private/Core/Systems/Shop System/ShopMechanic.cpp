@@ -4,6 +4,7 @@
 #include "Core/Systems/Shop System/ShopMechanic.h"
 
 #include "Components/BoxComponent.h"
+#include "Components/ScrollBox.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Core/Systems/Characters/MyCharacter.h"
@@ -37,48 +38,7 @@ AShopMechanic::AShopMechanic()
 	WidgetDetectionComponent->SetupAttachment(SphereDetectionComponent);
 	WidgetDetectionComponent->SetVisibility(false);
 	WidgetDetectionComponent->SetWidgetSpace(EWidgetSpace::Screen);
-	
-	ShopsystemUI = CreateDefaultSubobject<UUserWidget>("ShopsystemUI");
 }
-void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
-{
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	
-	if (bPlayerInRange && ShopsystemUI && bShopOpen == false)
-	{
-		{
-			ShopsystemUI->AddToViewport();
-			UE_LOG(LogTemp, Warning, TEXT("Shop turned On"));
-			bShopOpen = true;
-			PC->SetIgnoreMoveInput(true);
-			PC->SetIgnoreLookInput(true);
-			if (PC)
-			{
-				FInputModeGameAndUI mode;
-				mode.SetWidgetToFocus(ShopsystemUI->TakeWidget());
-				mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-				PC->SetInputMode(mode);
-				
-				PC->bShowMouseCursor = true;
-			}
-		}
-	}
-	else if (bShopOpen == true)
-	{
-		ShopsystemUI->RemoveFromParent();
-		UE_LOG(LogTemp, Warning, TEXT("Shop Turned Off"));
-		bShopOpen = false;
-		PC->SetIgnoreMoveInput(false);
-		PC->SetIgnoreLookInput(false);
-		if (PC)
-		{
-			FInputModeGameAndUI mode;
-			PC->SetInputMode(mode);
-			PC->bShowMouseCursor = false;
-		}
-	}
-}
-
 void AShopMechanic::BeginPlay()
 {
 	Super::BeginPlay();
@@ -91,6 +51,80 @@ void AShopMechanic::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
+{
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	
+	if (bPlayerInRange && bShopOpen == false) // turn on the UI
+	{
+		if (!ShopSystemUIInstance && ShopsystemUIClass) //create the widget only if it doesnt exist
+		{
+			ShopSystemUIInstance = CreateWidget<UUserWidget>(PC, ShopsystemUIClass);
+		}
+		if (ShopSystemUIInstance)
+		{
+			ShopSystemUIInstance->AddToViewport();
+			UE_LOG(LogTemp, Warning, TEXT("Shop turned On"));
+			bShopOpen = true;
+			
+			UScrollBox* ScrollBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("ShopScrollHolder"))); //getting the scroll box *Spawn location
+			
+			if (ScrollBox && ItemDataTable)
+			{
+				ScrollBox->ClearChildren(); //clear out shop before opening
+
+				for(const FName& RowName : ShopItemNames) //reading through names in the data table
+				{
+					if (ShopItemSlots)
+					{
+						UUserWidget* NewSlot = CreateWidget<UUserWidget>(PC, ShopItemSlots); //creating the button ui for each item
+						UE_LOG(LogTemp, Warning, TEXT("Shop added items"));
+						if (FProperty* Prop = NewSlot->GetClass()->FindPropertyByName(TEXT("ItemKey"))) //set the itemkey 
+						{
+							FNameProperty* NameProp = CastField<FNameProperty>(Prop);
+							NameProp->SetPropertyValue_InContainer(NewSlot, RowName); //setting the name and values to each new slot
+						}
+						
+						ScrollBox->AddChild(NewSlot); //adding the button to the scroll box
+						NewSlot->SetPadding(50);
+					}
+				}
+			
+			}
+		}
+		if (PC)
+		{
+			PC->bShowMouseCursor = true;
+			PC->SetIgnoreMoveInput(true);
+			PC->SetIgnoreLookInput(true);
+		}
+	}
+	else if (bShopOpen == true) //if shop is active turn it off
+	{
+		if (ShopSystemUIInstance)
+		{
+			ShopSystemUIInstance->RemoveFromParent();
+		}
+		UE_LOG(LogTemp, Warning, TEXT("Shop Turned Off"));
+		bShopOpen = false;
+		if (PC)
+		{
+			PC->SetIgnoreMoveInput(false);
+			PC->SetIgnoreLookInput(false);
+			PC->bShowMouseCursor = false;
+		}
+	}
+}
+
+void AShopMechanic::BuyItem()
+{
+}
+
+void AShopMechanic::SellItem()
+{
+	
+}
+
 
 void AShopMechanic::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {

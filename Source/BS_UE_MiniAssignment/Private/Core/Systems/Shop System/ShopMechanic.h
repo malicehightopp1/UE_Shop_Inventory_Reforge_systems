@@ -20,7 +20,10 @@ public:
 	// Sets default values for this actor's properties
 	AShopMechanic();
 	virtual void InteractPure(AMyCharacter* player) override; //player interaction
+	UFUNCTION(BlueprintCallable, Category = "Shop System | Item Systems") void BuyItem();
+	UFUNCTION(BlueprintCallable, Category = "Shop System | Item Systems") void SellItem();
 	
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional),Category = "Shop System | Data") class UScrollBox* ShopScrollBox;
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | DefaultValues") float ShopDefaultDetection = 10.0f;
 
 protected:
@@ -43,9 +46,15 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | DefaultValues") bool bPlayerInRange = false;
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | DefaultValues") bool bShopOpen = false;
 	
+	//Items 
+	UPROPERTY(EditDefaultsOnly, Category = "Shop System | Data") UDataTable* ItemDataTable;
+	UPROPERTY(EditDefaultsOnly, Category = "Shop System | Data") TSubclassOf<UUserWidget> ShopItemSlots;
+	UPROPERTY(EditDefaultsOnly, Category = "Shop System | Data") TArray<FName> ShopItemNames;
+	
 	//Components
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | Components") USphereComponent* SphereDetectionComponent;
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | UI") UWidgetComponent* WidgetDetectionComponent;
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | Components") UBoxComponent* BoxDetectionComponent;
-	UPROPERTY(EditDefaultsOnly, Category = "Shop System | UI") UUserWidget* ShopsystemUI;
+	UPROPERTY(EditDefaultsOnly, Category = "Shop System | UI") TSubclassOf<UUserWidget> ShopsystemUIClass;
+	UPROPERTY() UUserWidget* ShopSystemUIInstance;
 };
