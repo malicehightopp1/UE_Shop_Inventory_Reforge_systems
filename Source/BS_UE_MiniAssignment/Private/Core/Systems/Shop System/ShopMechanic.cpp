@@ -66,7 +66,10 @@ void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 			ShopSystemUIInstance->AddToViewport();
 			UE_LOG(LogTemp, Warning, TEXT("Shop turned On"));
 			bShopOpen = true;
-			
+
+			//
+			//Keep in mind this fetch for the scroll box likes to reset the name - causes no Ui to show - go into widget and name the scroll box the name below
+			//
 			UScrollBox* ScrollBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("ShopScrollHolder"))); //getting the scroll box *Spawn location
 			
 			if (ScrollBox && ItemDataTable)
@@ -86,7 +89,7 @@ void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 						}
 						
 						ScrollBox->AddChild(NewSlot); //adding the button to the scroll box
-						NewSlot->SetPadding(50);
+						NewSlot->SetPadding(-30);
 					}
 				}
 			
