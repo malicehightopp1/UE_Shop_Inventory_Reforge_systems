@@ -7,7 +7,7 @@ UBPC_Currencysystem::UBPC_Currencysystem()
 	PrimaryComponentTick.bCanEverTick = false;
 	
 	PlayerCurrentCurrency = 0;
-	PlayerMaxCurrency = 1000;
+	PlayerMaxCurrency = 10000;
 }
 void UBPC_Currencysystem::BeginPlay()
 {

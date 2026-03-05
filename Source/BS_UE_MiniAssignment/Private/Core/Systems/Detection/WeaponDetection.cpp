@@ -126,7 +126,7 @@ void AWeaponDetection::OnSphereOverlapEnd(UPrimitiveComponent* OverlappedCompone
 		UpdateWidgetUI();
 	}
 }
-void AWeaponDetection::UpdateWidgetUI()
+void AWeaponDetection::UpdateWidgetUI() const
 {
 	bool bShouldShowUI = (bPlayerIsInRange && CurrentWeapon != nullptr);
 	

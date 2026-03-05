@@ -32,7 +32,7 @@ public:
 private:
 	//Reforge Calling
 	UFUNCTION(BlueprintCallable, Category = "UI") void TriggerReforge();	
-	UFUNCTION() void UpdateWidgetUI();
+	UFUNCTION() void UpdateWidgetUI() const;
 	
 	//Overlap detection - Weapon and Player
 	UFUNCTION() void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

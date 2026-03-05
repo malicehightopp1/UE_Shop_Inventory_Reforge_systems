@@ -26,6 +26,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional),Category = "Shop System | Data") class UScrollBox* ShopScrollBox;
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | DefaultValues") float ShopDefaultDetection = 10.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Shop System | Data") TArray<FName> ShopItemNames;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -49,12 +50,13 @@ private:
 	//Items 
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | Data") UDataTable* ItemDataTable;
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | Data") TSubclassOf<UUserWidget> ShopItemSlots;
-	UPROPERTY(EditDefaultsOnly, Category = "Shop System | Data") TArray<FName> ShopItemNames;
 	
 	//Components
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | Components") USphereComponent* SphereDetectionComponent;
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | UI") UWidgetComponent* WidgetDetectionComponent;
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | Components") UBoxComponent* BoxDetectionComponent;
-	UPROPERTY(EditDefaultsOnly, Category = "Shop System | UI") TSubclassOf<UUserWidget> ShopsystemUIClass;
-	UPROPERTY() UUserWidget* ShopSystemUIInstance;
+
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Shop System | UI") TSubclassOf<UUserWidget> ShopsystemUIClass; //reference to the shop widget
+	UPROPERTY() UUserWidget* ShopSystemUIInstance; //the actual instance, AKA what we spawn
 };

@@ -92,9 +92,10 @@ void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 			
 			}
 		}
+		
 		if (PC)
 		{
-			PC->bShowMouseCursor = true;
+			PC->SetShowMouseCursor(true);
 			PC->SetIgnoreMoveInput(true);
 			PC->SetIgnoreLookInput(true);
 		}
@@ -118,6 +119,11 @@ void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 
 void AShopMechanic::BuyItem()
 {
+	// auto* Player = Cast<AMyCharacter>(Player);
+	// if (Player)
+	// {
+	// 	
+	// }
 }
 
 void AShopMechanic::SellItem()

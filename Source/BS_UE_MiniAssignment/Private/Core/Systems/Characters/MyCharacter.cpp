@@ -93,14 +93,13 @@ void AMyCharacter::Interact(const FInputActionValue& Value) //interaction
 	FVector end = start + (CameraComp->GetForwardVector() *300);
 	
 	UKismetSystemLibrary::SphereTraceSingle(this, start, end, 5.0f, UEngineTypes::ConvertToTraceType(ECC_Visibility), 
-		false, TArray<AActor*>(), EDrawDebugTrace::ForDuration, *Hit, true);
+		false, TArray<AActor*>(), EDrawDebugTrace::None, *Hit, true);
 	
 	if (Hit->GetActor() != nullptr)
 	{
 		if (Hit->GetActor()->GetClass()->ImplementsInterface(UInteractInterface::StaticClass())) //if the actor that was hit has a interface
 		{
 			Cast<IInteractInterface>(Hit->GetActor())->InteractPure(this);
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *Hit->GetActor()->GetName());
 		}
 	}
 }
@@ -132,17 +131,6 @@ void AMyCharacter::Grab()
 			HitItem->bIsHeld = true;
 		}
 	}
-
-	DrawDebugLine( //for visuallizing breaksa if you click
-		GetWorld(),
-		start,
-		end,
-		FColor::Green,
-		false,
-		1.f,
-		0,
-		1.f
-		);
 }
 
 void AMyCharacter::Release()
