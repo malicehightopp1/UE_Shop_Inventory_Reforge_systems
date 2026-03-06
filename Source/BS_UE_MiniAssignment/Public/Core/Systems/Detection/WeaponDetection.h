@@ -33,6 +33,7 @@ private:
 	//Reforge Calling
 	UFUNCTION(BlueprintCallable, Category = "UI") void TriggerReforge();	
 	UFUNCTION() void UpdateWidgetUI() const;
+	UFUNCTION() void ConvertDataTypes();
 	
 	//Overlap detection - Weapon and Player
 	UFUNCTION() void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -42,12 +43,16 @@ private:
 	
 	//UI
 	UPROPERTY(EditDefaultsOnly, Category = "UI") UWidgetComponent* ReforgeTrigger;
-	UPROPERTY(EditDefaultsOnly, Category = "UI") UWidgetComponent* ReforgeInformation;
+	UPROPERTY(EditDefaultsOnly, Category = "UI") TSubclassOf<UUserWidget> ReforgeInformationUI; //information for instance to grab from
+	UPROPERTY() UUserWidget* ReforgeInformationInstance; //instance for making when interaaction happens
+	UPROPERTY() class UButton* ReforgeButton;
 	
 	//Reforging
 	UPROPERTY() AActor* CurrentWeapon;
 	UPROPERTY(EditDefaultsOnly, Category = "Detection | Reforging") bool bPlayerIsInRange = false;
 	UPROPERTY(EditDefaultsOnly, Category = "Detection | Reforging") float PlayerCurrentCurrency = 0;
+	UPROPERTY(EditDefaultsOnly, Category = "Detection | Reforging") bool bShopOpen = false;
+	UPROPERTY() FText FinalText;
 	
 	//Components
 	UPROPERTY(EditDefaultsOnly, Category = "Detection | Components ") UBoxComponent* BoxComp;

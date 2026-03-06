@@ -9,7 +9,16 @@
 #include "Components/WidgetComponent.h"
 #include "Core/Systems/Characters/MyCharacter.h"
 
-// Sets default values
+
+/*
+ * Handles input of shop system, Ui on shop, and buying/selling of items
+ * Reads off Data Table of items to set values on the widgets
+ * 
+ * TODO Buying and selling items, along with rework to bring up Reforge UI.
+ *
+ * - button to call reforgeItem - bind function to button
+ * - bring up Ui when interaction happens - easy part
+ */
 AShopMechanic::AShopMechanic()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -51,6 +60,7 @@ void AShopMechanic::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+#pragma region Shop Mechanics / interaction with shop systems
 void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 {
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
@@ -61,12 +71,12 @@ void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 		{
 			ShopSystemUIInstance = CreateWidget<UUserWidget>(PC, ShopsystemUIClass);
 		}
-		if (ShopSystemUIInstance)
+		if (ShopSystemUIInstance) //if you do an "else if" statement it wont work
 		{
 			ShopSystemUIInstance->AddToViewport();
 			UE_LOG(LogTemp, Warning, TEXT("Shop turned On"));
 			bShopOpen = true;
-
+			
 			//
 			//Keep in mind this fetch for the scroll box likes to reset the name - causes no Ui to show - go into widget and name the scroll box the name below
 			//
@@ -89,10 +99,9 @@ void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 						}
 						
 						ScrollBox->AddChild(NewSlot); //adding the button to the scroll box
-						NewSlot->SetPadding(-30);
+						NewSlot->SetPadding(-12);
 					}
 				}
-			
 			}
 		}
 		
@@ -133,8 +142,21 @@ void AShopMechanic::SellItem()
 {
 	
 }
+#pragma endregion 
 
+#pragma region Updating UI
+void AShopMechanic::UpdateWidgetUI()
+{
+	bool bRangeCheck = bPlayerInRange;
+	
+	if (WidgetDetectionComponent)
+	{
+		WidgetDetectionComponent->SetVisibility(bRangeCheck);
+	}
+}
+#pragma endregion
 
+#pragma region OverlapEvents
 void AShopMechanic::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (AMyCharacter* Player = Cast<AMyCharacter>(OtherActor))
@@ -153,13 +175,5 @@ void AShopMechanic::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActo
 		UpdateWidgetUI();
 	}
 }
-void AShopMechanic::UpdateWidgetUI()
-{
-	bool bRangeCheck = bPlayerInRange;
-	
-	if (WidgetDetectionComponent)
-	{
-		WidgetDetectionComponent->SetVisibility(bRangeCheck);
-	}
-}
+#pragma endregion
 
