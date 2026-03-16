@@ -24,7 +24,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Shop System | Item Systems") void SellItem();
 	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional),Category = "Shop System | Data") class UScrollBox* ShopScrollBox;
-	UPROPERTY(EditDefaultsOnly, Category = "Shop System | DefaultValues") float ShopDefaultDetection = 10.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Shop System | Data") TArray<FName> ShopItemNames;
 protected:
@@ -36,10 +35,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	//UI
+	//UI functions
 	UFUNCTION() void RequestDispatch(FName ItemKey);
 	UFUNCTION() void UpdateWidgetUI();
-	//Overlap Events
+
+	//Interaction Functions
+	UFUNCTION() void SetupShopSystem();
+	//Overlap Events functions
 	UFUNCTION() void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION() void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
@@ -56,7 +58,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | UI") UWidgetComponent* WidgetDetectionComponent;
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | Components") UBoxComponent* BoxDetectionComponent;
 
-	
+	//Defaults
+	UPROPERTY(EditDefaultsOnly, Category = "Shop System | DefaultValues") float ShopDefaultDetection = 10.0f;
+
+	//UserWidgets
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | UI") TSubclassOf<UUserWidget> ShopsystemUIClass; //reference to the shop widget
 	UPROPERTY() UUserWidget* ShopSystemUIInstance; //the actual instance, AKA what we spawn
 };

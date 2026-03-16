@@ -10,7 +10,6 @@
 #include "Core/Systems/Characters/MyCharacter.h"
 #include "Core/Systems/Items/ItemData.h"
 
-
 /*
  * Handles input of shop system, Ui on shop, and buying/selling of items
  * Reads off Data Table of items to set values on the widgets
@@ -69,53 +68,7 @@ void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 	
 	if (bPlayerInRange && bShopOpen == false) // turn on the UI
 	{
-		if (!ShopSystemUIInstance && ShopsystemUIClass) //create the widget only if it doesnt exist
-		{
-			ShopSystemUIInstance = CreateWidget<UUserWidget>(PC, ShopsystemUIClass);
-		}
-		if (ShopSystemUIInstance) //if you do an "else if" statement it wont work
-		{
-			ShopSystemUIInstance->AddToViewport();
-			UE_LOG(LogTemp, Warning, TEXT("Shop turned On"));
-			bShopOpen = true;
-			
-			//
-			//Keep in mind this fetch for the scroll box likes to reset the name - causes no Ui to show - go into widget and name the scroll box the name below
-			//
-			UScrollBox* ScrollBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("ShopScrollHolder"))); //getting the scroll box *Spawn location
-			
-			if (ScrollBox && ItemDataTable)
-			{
-				ScrollBox->ClearChildren(); //clear out shop before opening
-
-				for(const FName& RowName : ShopItemNames) //reading through names in the data table
-				{
-					if (ShopItemSlots)
-					{
-						UUserWidget* NewSlot = CreateWidget<UUserWidget>(PC, ShopItemSlots); //creating the button ui for each item
-						UE_LOG(LogTemp, Warning, TEXT("Shop added items"));
-						if (FProperty* Prop = NewSlot->GetClass()->FindPropertyByName(TEXT("ItemKey"))) //set the itemkey 
-						{
-							FNameProperty* NameProp = CastField<FNameProperty>(Prop);
-							NameProp->SetPropertyValue_InContainer(NewSlot, RowName); //setting the name and values to each new slot
-						}
-						FMulticastDelegateProperty* DelegateProp = FindFProperty<FMulticastDelegateProperty>(NewSlot->GetClass(), TEXT("RequestDispatch"));
-						
-						if (DelegateProp) //binding buy event to every button when created 
-						{
-							UE_LOG(LogTemp, Warning, TEXT("Shop request dispatch property"));
-							FScriptDelegate Delegate;
-							Delegate.BindUFunction(this, FName("RequestDispatch"));
-							DelegateProp->AddDelegate(Delegate, NewSlot);
-						}
-						
-						ScrollBox->AddChild(NewSlot); //adding the button to the scroll box
-						NewSlot->SetPadding(-12);
-					}
-				}
-			}
-		}
-		
+		SetupShopSystem();
 		if (PC) //locking movement and turning cursor on 
 		{
 			PC->SetShowMouseCursor(true);
@@ -129,7 +82,6 @@ void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 		{
 			ShopSystemUIInstance->RemoveFromParent();
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Shop Turned Off"));
 		bShopOpen = false;
 		if (PC)
 		{
@@ -140,6 +92,7 @@ void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 	}
 }
 
+//actually buying the item and using the players current currency
 void AShopMechanic::BuyItem(FName ItemKey, AMyCharacter* Player) //TODO buying and selling items from the shop. Right now just have it print out the item youre trying to buy and take currency 
 {
 	if (!ItemDataTable || !Player) return;
@@ -151,11 +104,14 @@ void AShopMechanic::BuyItem(FName ItemKey, AMyCharacter* Player) //TODO buying a
 		Player->GetCurrencySystem()->ChangePlayerCurrencey(-ItemToBuy->BuyPrice);
 	}
 }
+
+//selling the item and giving the player money back
 void AShopMechanic::SellItem()
 {
 	
 }
 
+//delegate to buy items - binding the on click
 void AShopMechanic::RequestDispatch(FName ItemKey) //for buying items
 {
 	AMyCharacter* Player = Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
@@ -176,6 +132,57 @@ void AShopMechanic::UpdateWidgetUI()
 	{
 		WidgetDetectionComponent->SetVisibility(bRangeCheck);
 	}
+}
+
+void AShopMechanic::SetupShopSystem()
+{
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+
+		if (!ShopSystemUIInstance && ShopsystemUIClass) //create the widget only if it doesnt exist
+		{
+			ShopSystemUIInstance = CreateWidget<UUserWidget>(PC, ShopsystemUIClass);
+		}
+		if (ShopSystemUIInstance) //if you do an "else if" statement it wont work
+		{
+			ShopSystemUIInstance->AddToViewport();
+			UE_LOG(LogTemp, Warning, TEXT("Shop turned On"));
+			bShopOpen = true;
+			//
+			//Keep in mind this fetch for the scroll box likes to reset the name - causes no Ui to show - go into widget and name the scroll box the name below
+			//
+			UScrollBox* ScrollBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("ShopScrollHolder"))); //getting the scroll box *Spawn location
+			
+			if (ScrollBox && ItemDataTable)
+			{
+				ScrollBox->ClearChildren(); //clear out shop before opening
+
+				for(const FName& RowName : ShopItemNames) //reading through names in the data table
+				{
+					if (ShopItemSlots)
+					{
+						UUserWidget* NewSlot = CreateWidget<UUserWidget>(PC, ShopItemSlots); //creating the button ui for each item
+						UE_LOG(LogTemp, Warning, TEXT("Shop added items"));
+						if (FProperty* Prop = NewSlot->GetClass()->FindPropertyByName(TEXT("ItemKey"))) //set the itemkey 
+						{
+							FNameProperty* NameProp = CastField<FNameProperty>(Prop);
+							NameProp->SetPropertyValue_InContainer(NewSlot, RowName); //setting the name and values to each new slot
+						}
+						FMulticastDelegateProperty* DelegateProp = FindFProperty<FMulticastDelegateProperty>(NewSlot->GetClass(), TEXT("RequestDispatch")); //getting delegate on each slot
+						
+						if (DelegateProp) //binding buy event to every button when created 
+						{
+							UE_LOG(LogTemp, Warning, TEXT("Shop request dispatch property"));
+							FScriptDelegate Delegate;
+							Delegate.BindUFunction(this, FName("RequestDispatch"));
+							DelegateProp->AddDelegate(Delegate, NewSlot);
+						}
+						
+						ScrollBox->AddChild(NewSlot); //adding the button to the scroll box
+						NewSlot->SetPadding(-12);
+					}
+				}
+			}
+		}
 }
 #pragma endregion
 

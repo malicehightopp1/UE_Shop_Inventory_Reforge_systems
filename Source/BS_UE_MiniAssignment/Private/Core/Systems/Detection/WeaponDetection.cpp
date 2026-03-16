@@ -6,9 +6,11 @@
 #include "Components/Button.h"
 #include "Components/SphereComponent.h"
 #include "Components/TextBlock.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Components/WidgetComponent.h"
 #include "Core/Systems/Characters/MyCharacter.h"
 #include "Core/Systems/Items/Weapon.h"
+#include "Kismet/GameplayStatics.h"
 // Sets default values
 
 AWeaponDetection::AWeaponDetection()
@@ -39,6 +41,20 @@ void AWeaponDetection::BeginPlay()
 	//player detection and UI turn on
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &AWeaponDetection::OnSphereOverlapBegin);
 	SphereComp->OnComponentEndOverlap.AddDynamic(this, &AWeaponDetection::OnSphereOverlapEnd);
+
+	//spawn particles
+	FVector BoxLocation = BoxComp->GetComponentLocation();
+	FRotator BoxRotation = BoxComp->GetComponentRotation();
+	ParticleSpawnLocation = BoxLocation;
+	ParticleSpawnRotation = BoxRotation;
+
+	auto* Player = Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	MyCharacterReference = Player;
+	
+	if (MyCharacterReference == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("NO CAST TO PLAYER"));
+	}
 }
 void AWeaponDetection::Tick(float DeltaTime)
 {
@@ -80,7 +96,6 @@ void AWeaponDetection::InteractPure(AMyCharacter* player)
 		{
 			ReforgeInformationInstance->AddToViewport();
 			bShopOpen = true;
-			//ConvertDataTypes();
 			
 			ReforgeButton = Cast<UButton>(ReforgeInformationInstance->GetWidgetFromName(TEXT("ReforgeButton")));
 			UTextBlock* TextBlock = Cast<UTextBlock>(ReforgeInformationInstance->GetWidgetFromName(TEXT("ReforgeInformation")));
@@ -121,28 +136,42 @@ void AWeaponDetection::InteractPure(AMyCharacter* player)
 void AWeaponDetection::TriggerReforge() //this can probably be reworked lots to process on one button call
 {
 	auto* Weapon = Cast<AWeapon>(CurrentWeapon);
-	//AMyCharacter* Player = Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController());
-
-	// PlayerCurrentCurrency = Player->GetCurrencySystem()->GetPlayerCurrentCurrency();//player has access to the currency system so cast to player to get currency system
-	// if (CurrentWeapon && PlayerCurrentCurrency > 99)
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("Reforging: %s"), *CurrentWeapon->GetName());
-	// 	TriggerReforge();
-	// 	Player->GetCurrencySystem()->ChangePlayerCurrencey(-100); //might move this to the Trigger Reforge function so all reforge actions run at once
-	// }
-	// else if (PlayerCurrentCurrency <= 0)
-	// {
-	// 	FString debugmsgFail = FString::Printf(TEXT("Not Enough Money!!"));
-	// 	GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, debugmsgFail);
-	// }
-	Weapon->WeaponStats = Weapon->ReforgeData->GetRandomReforge(); //reforging the item
-	UTextBlock* TextBlock = Cast<UTextBlock>(ReforgeInformationInstance->GetWidgetFromName(TEXT("ReforgeInformation")));
-
-	if (TextBlock) //setting text and reforge information
+	
+	if (MyCharacterReference == nullptr) return;
+	
+	if (CurrentWeapon && MyCharacterReference->GetCurrencySystem()->GetPlayerCurrentCurrency() > 99) //this cast is crashing the engine
 	{
-		ConvertDataTypes();
-		TextBlock->SetText(FinalText); //setting text to equal to Reforge information
+		UE_LOG(LogTemp, Error, TEXT("Reforging: %s"), *CurrentWeapon->GetName());
+		MyCharacterReference->GetCurrencySystem()->ChangePlayerCurrencey(-100); //might move this to the Trigger Reforge function so all reforge actions run at once
+		UTextBlock* TextBlock = Cast<UTextBlock>(ReforgeInformationInstance->GetWidgetFromName(TEXT("ReforgeInformation")));
+
+		if (TextBlock) //setting text and reforge information
+		{
+			ConvertDataTypes();
+			TextBlock->SetText(FinalText); //setting text to equal to Reforge information
+			SpawnParticle();
+		}
+		Weapon->WeaponStats = Weapon->ReforgeData->GetRandomReforge(); //reforging the item
 	}
+	else if (PlayerCurrentCurrency <= 99)
+	{
+		FString debugmsgFail = FString::Printf(TEXT("Not Enough Money!!"));
+		GEngine->AddOnScreenDebugMessage(-1,5.f, FColor::Red, debugmsgFail);
+	}
+}
+void AWeaponDetection::SpawnParticle() const
+{
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+	GetWorld(),
+	ReforgeParticle,
+	ParticleSpawnLocation,
+	ParticleSpawnRotation,
+	FVector(1.0f),
+	true,
+	true,
+	ENCPoolMethod::None,
+	true
+	);
 }
 #pragma endregion
 #pragma region Reforge UI
@@ -174,10 +203,10 @@ void AWeaponDetection::UpdateWidgetUI() const
 	}
 }
 
-void AWeaponDetection::ConvertDataTypes()
+void AWeaponDetection::ConvertDataTypes() 
 {
 	auto* Weapon = Cast<AWeapon>(CurrentWeapon);
-	FText WeaponTemplate = NSLOCTEXT("Combat", "WeaponDisplay", "{Prefix:s} {Name} (x{Multiplier:s})"); //setting the format that i want the info to be in
+	FText WeaponTemplate = NSLOCTEXT("Combat", "WeaponDisplay", "{0} {1} ({2}x)"); //setting the format that i want the info to be in - expects numbers not the names
 				
 	FText finalText = FText::Format //converting to string
 		(WeaponTemplate,

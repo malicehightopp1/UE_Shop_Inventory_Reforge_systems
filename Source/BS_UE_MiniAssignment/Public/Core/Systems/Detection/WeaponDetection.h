@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Core/Systems/Interaction/InteractionInterface.h"
 #include "GameFramework/Actor.h"
+#include "NiagaraSystem.h"
 #include "WeaponDetection.generated.h"
 
 class USphereComponent;
@@ -34,6 +35,7 @@ private:
 	UFUNCTION(BlueprintCallable, Category = "UI") void TriggerReforge();	
 	UFUNCTION() void UpdateWidgetUI() const;
 	UFUNCTION() void ConvertDataTypes();
+	UFUNCTION() void SpawnParticle() const;
 	
 	//Overlap detection - Weapon and Player
 	UFUNCTION() void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -46,6 +48,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "UI") TSubclassOf<UUserWidget> ReforgeInformationUI; //information for instance to grab from
 	UPROPERTY() UUserWidget* ReforgeInformationInstance; //instance for making when interaaction happens
 	UPROPERTY() class UButton* ReforgeButton;
+	UPROPERTY() AMyCharacter* MyCharacterReference;
 	
 	//Reforging
 	UPROPERTY() AActor* CurrentWeapon;
@@ -57,4 +60,10 @@ private:
 	//Components
 	UPROPERTY(EditDefaultsOnly, Category = "Detection | Components ") UBoxComponent* BoxComp;
 	UPROPERTY(EditDefaultsOnly, Category = "Detection | Components ") USphereComponent* SphereComp;
+
+	//Particles
+	UPROPERTY(EditDefaultsOnly, Category = "Detection | Components | Particles") UNiagaraSystem* ReforgeParticle;
+	UPROPERTY(EditDefaultsOnly, Category = "Detection | Components | Particles") FVector ParticleSpawnLocation;
+	UPROPERTY(EditDefaultsOnly, Category = "Detection | Components | Particles") FRotator ParticleSpawnRotation;
+
 };
