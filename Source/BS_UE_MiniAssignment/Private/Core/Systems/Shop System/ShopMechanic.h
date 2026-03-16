@@ -20,7 +20,7 @@ public:
 	// Sets default values for this actor's properties
 	AShopMechanic();
 	virtual void InteractPure(AMyCharacter* player) override; //player interaction
-	UFUNCTION(BlueprintCallable, Category = "Shop System | Item Systems") void BuyItem();
+	UFUNCTION(BlueprintCallable, Category = "Shop System | Item Systems") void BuyItem(FName ItemKey, AMyCharacter* Player);
 	UFUNCTION(BlueprintCallable, Category = "Shop System | Item Systems") void SellItem();
 	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional),Category = "Shop System | Data") class UScrollBox* ShopScrollBox;
@@ -37,6 +37,7 @@ public:
 
 private:
 	//UI
+	UFUNCTION() void RequestDispatch(FName ItemKey);
 	UFUNCTION() void UpdateWidgetUI();
 	//Overlap Events
 	UFUNCTION() void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

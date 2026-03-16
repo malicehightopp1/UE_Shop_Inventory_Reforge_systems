@@ -8,6 +8,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Core/Systems/Characters/MyCharacter.h"
+#include "Core/Systems/Items/ItemData.h"
 
 
 /*
@@ -60,6 +61,7 @@ void AShopMechanic::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
 #pragma region Shop Mechanics / interaction with shop systems
 void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 {
@@ -97,6 +99,15 @@ void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 							FNameProperty* NameProp = CastField<FNameProperty>(Prop);
 							NameProp->SetPropertyValue_InContainer(NewSlot, RowName); //setting the name and values to each new slot
 						}
+						FMulticastDelegateProperty* DelegateProp = FindFProperty<FMulticastDelegateProperty>(NewSlot->GetClass(), TEXT("RequestDispatch"));
+						
+						if (DelegateProp) //binding buy event to every button when created 
+						{
+							UE_LOG(LogTemp, Warning, TEXT("Shop request dispatch property"));
+							FScriptDelegate Delegate;
+							Delegate.BindUFunction(this, FName("RequestDispatch"));
+							DelegateProp->AddDelegate(Delegate, NewSlot);
+						}
 						
 						ScrollBox->AddChild(NewSlot); //adding the button to the scroll box
 						NewSlot->SetPadding(-12);
@@ -105,7 +116,7 @@ void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 			}
 		}
 		
-		if (PC)
+		if (PC) //locking movement and turning cursor on 
 		{
 			PC->SetShowMouseCursor(true);
 			PC->SetIgnoreMoveInput(true);
@@ -129,18 +140,30 @@ void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 	}
 }
 
-void AShopMechanic::BuyItem()
+void AShopMechanic::BuyItem(FName ItemKey, AMyCharacter* Player) //TODO buying and selling items from the shop. Right now just have it print out the item youre trying to buy and take currency 
 {
-	// auto* Player = Cast<AMyCharacter>(Player);
-	// if (Player)
-	// {
-	// 	
-	// }
+	if (!ItemDataTable || !Player) return;
+	
+	FItemDataInfo* ItemToBuy = ItemDataTable->FindRow<FItemDataInfo>(ItemKey, ""); //looking up the data on the table
+	
+	if (Player->GetCurrencySystem()->GetPlayerCurrentCurrency() >= ItemToBuy->BuyPrice)
+	{
+		Player->GetCurrencySystem()->ChangePlayerCurrencey(-ItemToBuy->BuyPrice);
+	}
 }
-
 void AShopMechanic::SellItem()
 {
 	
+}
+
+void AShopMechanic::RequestDispatch(FName ItemKey) //for buying items
+{
+	AMyCharacter* Player = Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	
+	if (Player)
+	{
+		BuyItem(ItemKey, Player);
+	}
 }
 #pragma endregion 
 
