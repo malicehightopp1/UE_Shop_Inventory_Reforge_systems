@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "ShopMechanic.generated.h"
 
+class UInventoryManager;
 class UBoxComponent;
 class UWidgetComponent;
 class USphereComponent;
@@ -64,4 +65,6 @@ private:
 	//UserWidgets
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | UI") TSubclassOf<UUserWidget> ShopsystemUIClass; //reference to the shop widget
 	UPROPERTY() UUserWidget* ShopSystemUIInstance; //the actual instance, AKA what we spawn
+	
+	UPROPERTY() UInventoryManager* inventoryManager;
 };

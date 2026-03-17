@@ -8,6 +8,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Core/Systems/Characters/MyCharacter.h"
+#include "Core/Systems/Inventory/InventoryManager.h"
 #include "Core/Systems/Items/ItemData.h"
 
 /*
@@ -53,6 +54,9 @@ void AShopMechanic::BeginPlay()
 	Super::BeginPlay();
 	SphereDetectionComponent->OnComponentBeginOverlap.AddDynamic(this, &AShopMechanic::OnOverlapBegin); //binding sphere to begin overlap
 	SphereDetectionComponent->OnComponentEndOverlap.AddDynamic(this, &AShopMechanic::OnOverlapEnd); //binding sphere to end overlap
+	
+	UInventoryManager* Inventory = Cast<UInventoryManager>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	inventoryManager = Inventory;
 }
 
 void AShopMechanic::Tick(float DeltaTime)
@@ -102,6 +106,8 @@ void AShopMechanic::BuyItem(FName ItemKey, AMyCharacter* Player) //TODO buying a
 	if (Player->GetCurrencySystem()->GetPlayerCurrentCurrency() >= ItemToBuy->BuyPrice)
 	{
 		Player->GetCurrencySystem()->ChangePlayerCurrencey(-ItemToBuy->BuyPrice);
+		
+		inventoryManager->AddItemToInventory(ItemToBuy->ItemName, 1);
 	}
 }
 
