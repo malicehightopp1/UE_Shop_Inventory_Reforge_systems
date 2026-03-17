@@ -2,7 +2,6 @@
 
 
 #include "Core/Systems/Items/Item.h"
-#include "Components/WidgetComponent.h"
 
 // Sets default values
 AItem::AItem()
@@ -13,7 +12,7 @@ AItem::AItem()
 
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>("ItemMesh");
 	RootComponent = ItemMesh;
-
+	
 	ItemMesh->SetSimulatePhysics(true);
 	ItemMesh->SetEnableGravity(true);
 	ItemMesh->SetCollisionProfileName(TEXT("Physics Actor"));
