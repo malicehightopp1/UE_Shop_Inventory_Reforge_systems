@@ -16,6 +16,22 @@ This project is a first person reforge, inventory, and shop system using UE5
 - Reforge system (stat rerolling, modifiers)
 - Item system (data-driven via DataTables or Assets)
 - UI built with UMG
+
+  ## Architecture Overview
+
+### Core Systems
+- `UInventoryComponent`
+  - Handles item storage, stacking, and queries
+- `UShopComponent`
+  - Manages vendor inventory and transactions
+- `UReforgeComponent`
+  - Handles stat reroll logic and cost scaling
+- `UItemDataAsset` / `FItemStruct`
+  - Defines item properties (rarity, stats, mesh, etc.)
+
+### Design Approach
+- Connecting systems that work well together
+- Data-driven items using DataTables or Data Assets
   
 ## **Project Setup**
 
