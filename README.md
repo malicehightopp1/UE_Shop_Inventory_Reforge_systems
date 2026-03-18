@@ -10,6 +10,14 @@ This project is a first person reforge, inventory, and shop system using UE5
 - Language: C++
 - Make sure to use the correct version to avoid compatibility issues.
 
+## Features
+- Inventory system (stacking, equipment slots, weight/limits)
+- Shop system (buy/sell, dynamic pricing, NPC vendors)
+- Reforge system (stat rerolling, rarity tiers, modifiers)
+- Item system (data-driven via DataTables or Assets)
+- Save/Load support
+- UI built with UMG
+- 
 ## **Project Setup**
 
 ### 1. Clone the Repository
