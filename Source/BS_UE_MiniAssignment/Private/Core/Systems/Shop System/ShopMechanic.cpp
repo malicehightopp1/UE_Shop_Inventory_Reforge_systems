@@ -111,6 +111,7 @@ void AShopMechanic::BuyItem(FName ItemKey, AMyCharacter* Player) //TODO buying a
 		Player->GetCurrencySystem()->ChangePlayerCurrencey(-ItemToBuy->BuyPrice);
 		
 		inventoryManager->AddItemToInventory(ItemKey, 1); //needs the item key AKA the row name NOT the itemtobuy
+		inventoryManager->RefreshInventory();
 	}
 }
 
