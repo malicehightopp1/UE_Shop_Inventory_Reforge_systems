@@ -3,37 +3,37 @@
 ![Unreal Engine](https://img.shields.io/badge/Engine-Unreal%20Engine%205-blue)
 
 ## **Description**
-	This project is a first person reforge, inventory, and shop system using UE5
+This project is a first person reforge, inventory, and shop system using UE5
 
 ## **Engine Version**
-	- Unreal Engine 5.5.4
-	- Language: C++
-	- Make sure to use the correct version to avoid compatibility issues.
+- Unreal Engine 5.5.4
+- Language: C++
+- Make sure to use the correct version to avoid compatibility issues.
 	
-	  # **Table Of Context**
-	  - [Project Features](#Features)
-	  - [Project Architecture](#Architecture-Overview)
-	  - [Contacts](#Contact)
+ # **Table Of Context**
+- [Project Features](#Features)
+- [Project Architecture](#Architecture-Overview)
+- [Contacts](#Contact)
 
 
 # Features
-	- Inventory system (stacking, equipment slots)
-	- Shop system (buy/sell, NPC vendors)
-	- Reforge system (stat rerolling, modifiers)
-	- Item system (data-driven via DataTables or Assets)
-	- UI built with UMG
+- Inventory system (stacking, equipment slots)
+- Shop system (buy/sell, NPC vendors)
+- Reforge system (stat rerolling, modifiers)
+- Item system (data-driven via DataTables or Assets)
+- UI built with UMG
 
 # Architecture Overview
 	
-	## Core Systems
-	- `UInventoryComponent`
-	  - Handles item storage, stacking, and queries
-	- `UShopComponent`
-	  - Manages vendor inventory and transactions
-	- `UReforgeComponent`
-	  - Handles stat reroll logic and cost scaling
-	- `UItemDataAsset` / `FItemStruct`
-	  - Defines item properties (rarity, stats, mesh, etc.)
+## Core Systems
+- `UInventoryComponent`
+  - Handles item storage, stacking, and queries
+- `UShopComponent`
+  - Manages vendor inventory and transactions
+- `UReforgeComponent`
+  - Handles stat reroll logic and cost scaling
+- `UItemDataAsset` / `FItemStruct`
+  - Defines item properties (rarity, stats, mesh, etc.)
 	
 	## Design Approach
 	- Connecting systems that work well together
@@ -81,6 +81,6 @@
 	```
 
 # **Contact**
-	- Developer: Brandin Stanfield
-	- Email: Brandin.Stanfield@gmail.com
-	- GitHub: https://github.com/malicehightopp1
+- Developer: Brandin Stanfield
+- Email: Brandin.Stanfield@gmail.com
+- GitHub: https://github.com/malicehightopp1
