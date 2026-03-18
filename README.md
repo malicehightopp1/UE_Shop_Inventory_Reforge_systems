@@ -10,6 +10,9 @@ This project is a first person reforge, inventory, and shop system using UE5
 - Language: C++
 - Make sure to use the correct version to avoid compatibility issues.
 
+  # **Table Of Context**
+  - [Project Features](#Features)
+
 ## Features
 - Inventory system (stacking, equipment slots)
 - Shop system (buy/sell, NPC vendors)
