@@ -32,15 +32,48 @@ This project is a first person reforge, inventory, and shop system using UE5
 ### Design Approach
 - Connecting systems that work well together
 - Data-driven items using DataTables or Data Assets
-  
-## **Project Setup**
 
-### 1. Clone the Repository
-```bash
-gh auth login
-git clone https://github.com/username/repository.git
-cd repository
+  Items are defined using:
+- DataTables (`FItemData`)
+
+### Example Fields
+- Name
+- ItemType
+- Sell Price
+- Buy price
+
+### Item Data Struct
+```cpp
+UENUM(BlueprintType)
+enum class EItemType : uint8 
+{
+	Weapon UMETA(DisplayName = "Weapon"),
+	Armour UMETA(DisplayName = "Armour"),
+	Consumable UMETA(DisplayName = "Consumable"),
+	Accessory UMETA(DisplayName = "Accesory"),
+	Misc UMETA(DisplayName = "Misc")
+};
+USTRUCT(BlueprintType)
+struct FItemDataInfo : public FTableRowBase
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemDataInfo) FName ItemName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemDataInfo) int32 ItemId;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemDataInfo) int32 BuyPrice;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemDataInfo) int32 SellPrice;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemDataInfo) UTexture2D* ItemTexture;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemDataInfo) bool bIsStackable;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemDataInfo) EItemType ItemType;
+};
+UCLASS()
+class UItemData : public UPrimaryDataAsset
+{
+	GENERATED_BODY()
+	
+};
 ```
+
 ## **Contact**
 - Developer: Brandin Stanfield
 - Email: Brandin.Stanfield@gmail.com
