@@ -125,7 +125,7 @@ FInventorySlot UInventoryManager::GetSlotAtIndex(int32 SlotIndex) const
 	return FInventorySlot();
 }
 
-void UInventoryManager::RefreshInventory()
+void UInventoryManager::RefreshInventory() //call to refresh the inventory, updating inventory UI
 {
 	OnInventoryChanged.Broadcast();
 }

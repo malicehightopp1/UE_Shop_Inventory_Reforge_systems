@@ -40,12 +40,21 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 private:
 	UPROPERTY() UBPC_Currencysystem* CurrencySystem;
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/// Inventory
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	UPROPERTY() UUserWidget* InventoryWidgetInstance; //instance of the class  for creating
+	UPROPERTY(EditDefaultsOnly, Category = "Player") TSubclassOf<UUserWidget> InventoryWidgetClass; //actual class reference
+	UPROPERTY(EditDefaultsOnly, Category = "Player") bool bIsInventoryOpen = false;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// functions - Locomotion
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	UFUNCTION() void Look(const FInputActionValue& Value);
 	UFUNCTION() void Move(const FInputActionValue& Value);
 	UFUNCTION() void Interact(const FInputActionValue& Value);
+	UFUNCTION() void Inventory(const FInputActionValue& Value);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// funtions - item pickup
@@ -62,6 +71,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Player | Player Input") UInputAction* JumpAction;
 	UPROPERTY(EditDefaultsOnly, Category = "Player | Player Input") UInputAction* GrabAction;
 	UPROPERTY(EditDefaultsOnly, Category = "Player | Player Input") UInputAction* InteractionAction;
+	UPROPERTY(EditDefaultsOnly, Category = "Player | Player Input") UInputAction* InventoryAction;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// Components

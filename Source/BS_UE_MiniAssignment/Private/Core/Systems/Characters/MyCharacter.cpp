@@ -5,6 +5,8 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CanvasPanel.h"
 #include "Components/WidgetComponent.h"
@@ -82,6 +84,9 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		
 		//Interaction
 		EnhancedInputComponent->BindAction(InteractionAction, ETriggerEvent::Started, this, &AMyCharacter::Interact);
+
+		//Inventory
+		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyCharacter::Inventory);
 	}
 }
 #pragma endregion
@@ -103,6 +108,39 @@ void AMyCharacter::Interact(const FInputActionValue& Value) //interaction
 		}
 	}
 }
+
+void AMyCharacter::Inventory(const FInputActionValue& Value)
+{
+	APlayerController* PC = Cast<APlayerController>(Controller);
+	if (!PC) return;
+
+	if (InventoryWidgetInstance && InventoryWidgetInstance->IsInViewport() && bIsInventoryOpen == true) //checking if open, close it
+	{
+		InventoryWidgetInstance->RemoveFromParent();
+		InventoryWidgetInstance = nullptr;
+		bIsInventoryOpen = false;
+
+		PC->SetShowMouseCursor(false);
+		PC->SetIgnoreLookInput(false);
+		PC->SetIgnoreMoveInput(false);
+		return;
+	}
+
+	if (InventoryWidgetClass) //create the inventory Ui if not open
+	{
+		InventoryWidgetInstance = CreateWidget<UUserWidget>(PC, InventoryWidgetClass);
+		if (InventoryWidgetInstance && bIsInventoryOpen == false)
+		{
+			InventoryWidgetInstance->AddToViewport();
+
+			bIsInventoryOpen = true;
+			PC->SetShowMouseCursor(true);
+			PC->SetIgnoreLookInput(true);
+			PC->SetIgnoreMoveInput(true);
+		}
+	}
+}
+
 /*
  * for grabbing objects for physics moving
  */
