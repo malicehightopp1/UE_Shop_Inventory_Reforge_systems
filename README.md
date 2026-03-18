@@ -12,8 +12,10 @@ This project is a first person reforge, inventory, and shop system using UE5
 
   # **Table Of Context**
   - [Project Features](#Features)
+  - [Contacts](#Contacts)
 
-## Features
+
+# Features
 - Inventory system (stacking, equipment slots)
 - Shop system (buy/sell, NPC vendors)
 - Reforge system (stat rerolling, modifiers)
@@ -77,7 +79,7 @@ class UItemData : public UPrimaryDataAsset
 };
 ```
 
-## **Contact**
+# **Contact**
 - Developer: Brandin Stanfield
 - Email: Brandin.Stanfield@gmail.com
 - GitHub: https://github.com/malicehightopp1
