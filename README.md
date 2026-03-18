@@ -86,7 +86,7 @@ This project is a first person reforge, inventory, and shop system using UE5
 |------|-----|
 | Open Inventory | I |
 | Interact | E |
-| Open Shop | F |
+| Open Shop && Reforge Panel | E |
 
 # **Contact**
 - Developer: Brandin Stanfield
