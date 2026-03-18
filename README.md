@@ -22,9 +22,9 @@ This project is a first person reforge, inventory, and shop system using UE5
 - Item system (data-driven via DataTables or Assets)
 - UI built with UMG
 
-  ## Architecture Overview
+# Architecture Overview
 
-### Core Systems
+## Core Systems
 - `UInventoryComponent`
   - Handles item storage, stacking, and queries
 - `UShopComponent`
@@ -34,11 +34,11 @@ This project is a first person reforge, inventory, and shop system using UE5
 - `UItemDataAsset` / `FItemStruct`
   - Defines item properties (rarity, stats, mesh, etc.)
 
-### Design Approach
+## Design Approach
 - Connecting systems that work well together
 - Data-driven items using DataTables or Data Assets
 
-  Items are defined using:
+Items are defined using:
 - DataTables (`FItemData`)
 
 ### Example Fields
@@ -47,7 +47,7 @@ This project is a first person reforge, inventory, and shop system using UE5
 - Sell Price
 - Buy price
 
-### Item Data Struct
+## Item Data Struct
 ```cpp
 UENUM(BlueprintType)
 enum class EItemType : uint8 
