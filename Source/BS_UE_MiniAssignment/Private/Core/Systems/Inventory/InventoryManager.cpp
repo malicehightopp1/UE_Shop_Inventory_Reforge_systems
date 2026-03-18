@@ -82,6 +82,7 @@ int32 UInventoryManager::GetItemQuantity(FName ItemRowName)
 	return InventorySlots[Index].Quantity; //gives how many items we have in that slot
 }
 
+
 // ========================================================================================================
 // ------ Private helpers ---------------------------------------------------------------------------------
 // ========================================================================================================
@@ -111,5 +112,21 @@ int32 UInventoryManager::FindEmptySlotIndex()
 		}
 	}
 	return -1;
+}
+// ========================================================================================================
+// ------ UI Updating -------------------------------------------------------------------------------------
+// ========================================================================================================
+FInventorySlot UInventoryManager::GetSlotAtIndex(int32 SlotIndex) const
+{
+	if (InventorySlots.IsValidIndex(SlotIndex))
+	{
+		return InventorySlots[SlotIndex];
+	}
+	return FInventorySlot();
+}
+
+void UInventoryManager::RefreshInventory()
+{
+	OnInventoryChanged.Broadcast();
 }
 

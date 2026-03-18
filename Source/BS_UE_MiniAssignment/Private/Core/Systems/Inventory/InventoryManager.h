@@ -40,6 +40,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Components|Inventory") bool Hasitem(FName ItemRowName, int32 Quantity = 1); //checking if the player has the item *FOR STACKING*
 	UFUNCTION(BLueprintCallable, Category="Components|Inventory") int32 GetItemQuantity(FName ItemRowName);
 	
+	//UI Functions 
+	UFUNCTION(BlueprintPure, Category="Components|Inventory") TArray<FInventorySlot> GetAllSLots() const {return InventorySlots;}
+	UFUNCTION(BlueprintPure, Category="Components|Inventory") FInventorySlot GetSlotAtIndex(int32 SlotIndex) const;
+	UFUNCTION(BlueprintPure, Category="Components|Inventory") int32 GetMaxSlotIndex() const {return MaxSlots; }
+	UFUNCTION(BlueprintCallable, Category="Components|Inventory") void RefreshInventory();
+	
 	// ========================================================================================================
 	// ------ Config for inventory ----------------------------------------------------------------------------
 	// ========================================================================================================

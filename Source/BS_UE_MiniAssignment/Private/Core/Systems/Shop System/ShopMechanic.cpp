@@ -55,8 +55,11 @@ void AShopMechanic::BeginPlay()
 	SphereDetectionComponent->OnComponentBeginOverlap.AddDynamic(this, &AShopMechanic::OnOverlapBegin); //binding sphere to begin overlap
 	SphereDetectionComponent->OnComponentEndOverlap.AddDynamic(this, &AShopMechanic::OnOverlapEnd); //binding sphere to end overlap
 	
-	UInventoryManager* Inventory = Cast<UInventoryManager>(GetWorld()->GetFirstPlayerController()->GetPawn());
-	inventoryManager = Inventory;
+	APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn(); //getting player pawn to grab the inventory system
+	if (PlayerPawn)
+	{
+		inventoryManager = PlayerPawn->FindComponentByClass<UInventoryManager>();
+	}
 }
 
 void AShopMechanic::Tick(float DeltaTime)
@@ -107,7 +110,7 @@ void AShopMechanic::BuyItem(FName ItemKey, AMyCharacter* Player) //TODO buying a
 	{
 		Player->GetCurrencySystem()->ChangePlayerCurrencey(-ItemToBuy->BuyPrice);
 		
-		inventoryManager->AddItemToInventory(ItemToBuy->ItemName, 1);
+		inventoryManager->AddItemToInventory(ItemKey, 1); //needs the item key AKA the row name NOT the itemtobuy
 	}
 }
 
