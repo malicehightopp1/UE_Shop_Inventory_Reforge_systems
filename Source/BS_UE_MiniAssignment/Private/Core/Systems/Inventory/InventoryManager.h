@@ -39,6 +39,15 @@ public:
 	UFUNCTION(blueprintCallable, Category="Components|Inventory") bool RemoveItemFromInventory(FName ItemRowName, int32 Quantity); // Function for removing items from inventory
 	UFUNCTION(BlueprintCallable, Category="Components|Inventory") bool Hasitem(FName ItemRowName, int32 Quantity = 1); //checking if the player has the item *FOR STACKING*
 	UFUNCTION(BLueprintCallable, Category="Components|Inventory") int32 GetItemQuantity(FName ItemRowName);
+	UFUNCTION(BlueprintCallable, Category="Components|Inventory") bool IsInventoryFull();
+	
+	// ========================================================================================================
+	// ------ Inventory UI Turn On ----------------------------------------------------------------------------
+	// ========================================================================================================
+	UFUNCTION() void Inventory(bool bIsVisable);
+	UPROPERTY() UUserWidget* InventoryWidgetInstance; //instance of the class  for creating
+	UPROPERTY(EditDefaultsOnly, Category = "Player") TSubclassOf<UUserWidget> InventoryWidgetClass; //actual class reference
+	UPROPERTY(EditDefaultsOnly, Category = "Player") bool bIsInventoryOpen = false;
 	
 	//UI Functions 
 	UFUNCTION(BlueprintPure, Category="Components|Inventory") TArray<FInventorySlot> GetAllSLots() const {return InventorySlots;}

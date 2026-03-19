@@ -3,6 +3,7 @@
 
 #include "Core/Systems/Inventory/InventoryManager.h"
 
+#include "Blueprint/UserWidget.h"
 #include "Core/Systems/Items/ItemData.h"
 
 UInventoryManager::UInventoryManager()
@@ -82,6 +83,10 @@ int32 UInventoryManager::GetItemQuantity(FName ItemRowName)
 	return InventorySlots[Index].Quantity; //gives how many items we have in that slot
 }
 
+bool UInventoryManager::IsInventoryFull()
+{
+	return FindEmptySlotIndex() == -1; //if there is no empty slots check
+}
 
 // ========================================================================================================
 // ------ Private helpers ---------------------------------------------------------------------------------
@@ -128,5 +133,37 @@ FInventorySlot UInventoryManager::GetSlotAtIndex(int32 SlotIndex) const
 void UInventoryManager::RefreshInventory() //call to refresh the inventory, updating inventory UI
 {
 	OnInventoryChanged.Broadcast();
+}
+
+void UInventoryManager::Inventory(bool bIsVisable)
+{
+	APlayerController* PC = Cast<APlayerController>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	if (!PC) return;
+
+	if (InventoryWidgetInstance && InventoryWidgetInstance->IsInViewport() && bIsInventoryOpen == true && bIsVisable) //checking if open, close it
+	{
+		InventoryWidgetInstance->RemoveFromParent();
+		InventoryWidgetInstance = nullptr;
+		bIsInventoryOpen = false;
+
+		PC->SetShowMouseCursor(false);
+		PC->SetIgnoreLookInput(false);
+		PC->SetIgnoreMoveInput(false);
+		return;
+	}
+
+	if (InventoryWidgetClass) //create the inventory Ui if not open
+	{
+		InventoryWidgetInstance = CreateWidget<UUserWidget>(PC, InventoryWidgetClass);
+		if (InventoryWidgetInstance && bIsInventoryOpen == false)
+		{
+			InventoryWidgetInstance->AddToViewport();
+
+			bIsInventoryOpen = true;
+			PC->SetShowMouseCursor(true);
+			PC->SetIgnoreLookInput(true);
+			PC->SetIgnoreMoveInput(true);
+		}
+	}
 }
 

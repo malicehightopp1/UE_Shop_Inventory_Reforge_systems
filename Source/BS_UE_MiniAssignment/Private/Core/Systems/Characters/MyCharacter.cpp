@@ -11,6 +11,7 @@
 #include "Components/CanvasPanel.h"
 #include "Components/WidgetComponent.h"
 #include "Core/Systems/Interaction/InteractionInterface.h"
+#include "Core/Systems/Inventory/InventoryManager.h"
 #include "Core/Systems/Items/Item.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -86,7 +87,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(InteractionAction, ETriggerEvent::Started, this, &AMyCharacter::Interact);
 
 		//Inventory
-		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyCharacter::Inventory);
+		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AMyCharacter::InventoryToggle);
 	}
 }
 #pragma endregion
@@ -109,38 +110,10 @@ void AMyCharacter::Interact(const FInputActionValue& Value) //interaction
 	}
 }
 
-void AMyCharacter::Inventory(const FInputActionValue& Value)
+void AMyCharacter::InventoryToggle(const FInputActionValue& Value)
 {
-	APlayerController* PC = Cast<APlayerController>(Controller);
-	if (!PC) return;
-
-	if (InventoryWidgetInstance && InventoryWidgetInstance->IsInViewport() && bIsInventoryOpen == true) //checking if open, close it
-	{
-		InventoryWidgetInstance->RemoveFromParent();
-		InventoryWidgetInstance = nullptr;
-		bIsInventoryOpen = false;
-
-		PC->SetShowMouseCursor(false);
-		PC->SetIgnoreLookInput(false);
-		PC->SetIgnoreMoveInput(false);
-		return;
-	}
-
-	if (InventoryWidgetClass) //create the inventory Ui if not open
-	{
-		InventoryWidgetInstance = CreateWidget<UUserWidget>(PC, InventoryWidgetClass);
-		if (InventoryWidgetInstance && bIsInventoryOpen == false)
-		{
-			InventoryWidgetInstance->AddToViewport();
-
-			bIsInventoryOpen = true;
-			PC->SetShowMouseCursor(true);
-			PC->SetIgnoreLookInput(true);
-			PC->SetIgnoreMoveInput(true);
-		}
-	}
+	InventoryManager->Inventory(true);
 }
-
 /*
  * for grabbing objects for physics moving
  */

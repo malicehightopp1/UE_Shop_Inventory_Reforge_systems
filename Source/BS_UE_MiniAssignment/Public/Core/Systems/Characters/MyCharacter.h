@@ -13,6 +13,7 @@ class UCanvasPanel;
 class UBPC_Currencysystem;
 class UWidgetComponent;
 class UCameraComponent;
+class UInventoryManager;
 
 UCLASS()
 class BS_UE_MINIASSIGNMENT_API AMyCharacter : public ACharacter
@@ -40,13 +41,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 private:
 	UPROPERTY() UBPC_Currencysystem* CurrencySystem;
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/// Inventory
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	UPROPERTY() UUserWidget* InventoryWidgetInstance; //instance of the class  for creating
-	UPROPERTY(EditDefaultsOnly, Category = "Player") TSubclassOf<UUserWidget> InventoryWidgetClass; //actual class reference
-	UPROPERTY(EditDefaultsOnly, Category = "Player") bool bIsInventoryOpen = false;
+	UPROPERTY(EditDefaultsOnly, Category = "Player") UInventoryManager* InventoryManager;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// functions - Locomotion
@@ -54,7 +49,7 @@ private:
 	UFUNCTION() void Look(const FInputActionValue& Value);
 	UFUNCTION() void Move(const FInputActionValue& Value);
 	UFUNCTION() void Interact(const FInputActionValue& Value);
-	UFUNCTION() void Inventory(const FInputActionValue& Value);
+	UFUNCTION() void InventoryToggle(const FInputActionValue& Value);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// funtions - item pickup

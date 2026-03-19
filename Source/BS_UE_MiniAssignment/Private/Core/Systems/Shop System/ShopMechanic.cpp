@@ -103,7 +103,12 @@ void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 void AShopMechanic::BuyItem(FName ItemKey, AMyCharacter* Player) //TODO buying and selling items from the shop. Right now just have it print out the item youre trying to buy and take currency 
 {
 	if (!ItemDataTable || !Player) return;
-	
+
+	if (inventoryManager->IsInventoryFull())
+	{
+		UE_LOG(LogTemp, Display, TEXT("Inventory Full"));
+		return;
+	}
 	FItemDataInfo* ItemToBuy = ItemDataTable->FindRow<FItemDataInfo>(ItemKey, ""); //looking up the data on the table
 	
 	if (Player->GetCurrencySystem()->GetPlayerCurrentCurrency() >= ItemToBuy->BuyPrice)
@@ -116,9 +121,19 @@ void AShopMechanic::BuyItem(FName ItemKey, AMyCharacter* Player) //TODO buying a
 }
 
 //selling the item and giving the player money back
-void AShopMechanic::SellItem()
+void AShopMechanic::SellItem(FName ItemKey, AMyCharacter* Player)
 {
+	if (!ItemDataTable || !Player) return;
+
+	FItemDataInfo* ItemToBuy = ItemDataTable->FindRow<FItemDataInfo>(ItemKey, ""); //looking up the data on the table
 	
+	if (inventoryManager->Hasitem(ItemKey, 1))
+	{
+		Player->GetCurrencySystem()->ChangePlayerCurrencey(ItemToBuy->SellPrice);
+
+		inventoryManager->RemoveItemFromInventory(ItemKey, 1);
+		inventoryManager->RefreshInventory();
+	}
 }
 
 //delegate to buy items - binding the on click
@@ -129,6 +144,15 @@ void AShopMechanic::RequestDispatch(FName ItemKey) //for buying items
 	if (Player)
 	{
 		BuyItem(ItemKey, Player);
+	}
+}
+
+void AShopMechanic::RequestSell(FName ItemKey)
+{
+	AMyCharacter* Player = Cast<AMyCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	if (Player)
+	{
+		SellItem(ItemKey, Player);
 	}
 }
 #pragma endregion 
@@ -155,7 +179,6 @@ void AShopMechanic::SetupShopSystem()
 		if (ShopSystemUIInstance) //if you do an "else if" statement it wont work
 		{
 			ShopSystemUIInstance->AddToViewport();
-			UE_LOG(LogTemp, Warning, TEXT("Shop turned On"));
 			bShopOpen = true;
 			//
 			//Keep in mind this fetch for the scroll box likes to reset the name - causes no Ui to show - go into widget and name the scroll box the name below
@@ -171,20 +194,24 @@ void AShopMechanic::SetupShopSystem()
 					if (ShopItemSlots)
 					{
 						UUserWidget* NewSlot = CreateWidget<UUserWidget>(PC, ShopItemSlots); //creating the button ui for each item
-						UE_LOG(LogTemp, Warning, TEXT("Shop added items"));
 						if (FProperty* Prop = NewSlot->GetClass()->FindPropertyByName(TEXT("ItemKey"))) //set the itemkey 
 						{
 							FNameProperty* NameProp = CastField<FNameProperty>(Prop);
 							NameProp->SetPropertyValue_InContainer(NewSlot, RowName); //setting the name and values to each new slot
 						}
-						FMulticastDelegateProperty* DelegateProp = FindFProperty<FMulticastDelegateProperty>(NewSlot->GetClass(), TEXT("RequestDispatch")); //getting delegate on each slot
-						
-						if (DelegateProp) //binding buy event to every button when created 
+						FMulticastDelegateProperty* DelegateBuyRequest = FindFProperty<FMulticastDelegateProperty>(NewSlot->GetClass(), TEXT("RequestDispatch")); //getting delegate on each slot
+						FMulticastDelegateProperty* DelegateSellRequest = FindFProperty<FMulticastDelegateProperty>(NewSlot->GetClass(), TEXT("RequestSell"));
+						if (DelegateBuyRequest) //binding buy event to every button when created 
 						{
-							UE_LOG(LogTemp, Warning, TEXT("Shop request dispatch property"));
-							FScriptDelegate Delegate;
-							Delegate.BindUFunction(this, FName("RequestDispatch"));
-							DelegateProp->AddDelegate(Delegate, NewSlot);
+							FScriptDelegate DelegateBuy;
+							DelegateBuy.BindUFunction(this, FName("RequestDispatch"));
+							DelegateBuyRequest->AddDelegate(DelegateBuy, NewSlot);
+						}
+						if (DelegateSellRequest)
+						{
+							FScriptDelegate DelegateSell;
+							DelegateSell.BindUFunction(this, FName("RequestSell"));
+							DelegateSellRequest->AddDelegate(DelegateSell, NewSlot);
 						}
 						
 						ScrollBox->AddChild(NewSlot); //adding the button to the scroll box
@@ -201,7 +228,6 @@ void AShopMechanic::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAc
 {
 	if (AMyCharacter* Player = Cast<AMyCharacter>(OtherActor))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player Entered Shop Area"));
 		bPlayerInRange = true;
 		UpdateWidgetUI();
 	}
@@ -210,7 +236,6 @@ void AShopMechanic::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	if (AMyCharacter* Player = Cast<AMyCharacter>(OtherActor))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player Left Shop Area"));
 		bPlayerInRange = false;
 		UpdateWidgetUI();
 	}

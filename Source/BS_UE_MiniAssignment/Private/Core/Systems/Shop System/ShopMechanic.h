@@ -22,7 +22,7 @@ public:
 	AShopMechanic();
 	virtual void InteractPure(AMyCharacter* player) override; //player interaction
 	UFUNCTION(BlueprintCallable, Category = "Shop System | Item Systems") void BuyItem(FName ItemKey, AMyCharacter* Player);
-	UFUNCTION(BlueprintCallable, Category = "Shop System | Item Systems") void SellItem();
+	UFUNCTION(BlueprintCallable, Category = "Shop System | Item Systems") void SellItem(FName ItemKey, AMyCharacter* Player);
 	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional),Category = "Shop System | Data") class UScrollBox* ShopScrollBox;
 
@@ -38,6 +38,7 @@ public:
 private:
 	//UI functions
 	UFUNCTION() void RequestDispatch(FName ItemKey);
+	UFUNCTION() void RequestSell(FName ItemKey);
 	UFUNCTION() void UpdateWidgetUI();
 
 	//Interaction Functions
