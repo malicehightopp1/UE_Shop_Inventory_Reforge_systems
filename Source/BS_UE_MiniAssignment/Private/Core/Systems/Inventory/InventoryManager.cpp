@@ -149,6 +149,10 @@ void UInventoryManager::Inventory() //for turning on and off the UI
 		PC->SetShowMouseCursor(false);
 		PC->SetIgnoreLookInput(false);
 		PC->SetIgnoreMoveInput(false);
+
+		// FInputModeGameOnly InputMode;
+		// PC->SetInputMode(InputMode);
+		// PC->SetShowMouseCursor(false);
 		return;
 	}
 
@@ -163,6 +167,10 @@ void UInventoryManager::Inventory() //for turning on and off the UI
 			PC->SetShowMouseCursor(true);
 			PC->SetIgnoreLookInput(true);
 			PC->SetIgnoreMoveInput(true);
+
+			// FInputModeUIOnly InputMode;
+			// PC->SetInputMode(InputMode);
+			// PC->SetShowMouseCursor(true);
 		}
 	}
 }
