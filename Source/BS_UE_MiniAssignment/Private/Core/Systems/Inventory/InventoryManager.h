@@ -44,7 +44,7 @@ public:
 	// ========================================================================================================
 	// ------ Inventory UI Turn On ----------------------------------------------------------------------------
 	// ========================================================================================================
-	UFUNCTION() void Inventory(bool bIsVisable);
+	UFUNCTION() void Inventory();
 	UPROPERTY() UUserWidget* InventoryWidgetInstance; //instance of the class  for creating
 	UPROPERTY(EditDefaultsOnly, Category = "Player") TSubclassOf<UUserWidget> InventoryWidgetClass; //actual class reference
 	UPROPERTY(EditDefaultsOnly, Category = "Player") bool bIsInventoryOpen = false;

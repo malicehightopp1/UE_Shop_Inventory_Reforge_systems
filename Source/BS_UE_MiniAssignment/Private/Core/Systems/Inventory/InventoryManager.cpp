@@ -135,12 +135,12 @@ void UInventoryManager::RefreshInventory() //call to refresh the inventory, upda
 	OnInventoryChanged.Broadcast();
 }
 
-void UInventoryManager::Inventory(bool bIsVisable)
+void UInventoryManager::Inventory() //for turning on and off the UI
 {
-	APlayerController* PC = Cast<APlayerController>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (!PC) return;
-
-	if (InventoryWidgetInstance && InventoryWidgetInstance->IsInViewport() && bIsInventoryOpen == true && bIsVisable) //checking if open, close it
+	UE_LOG(LogTemp, Warning, TEXT("InventoryManager::Inventory"));
+	if (InventoryWidgetInstance && InventoryWidgetInstance->IsInViewport() && bIsInventoryOpen == true) //checking if open, close it
 	{
 		InventoryWidgetInstance->RemoveFromParent();
 		InventoryWidgetInstance = nullptr;

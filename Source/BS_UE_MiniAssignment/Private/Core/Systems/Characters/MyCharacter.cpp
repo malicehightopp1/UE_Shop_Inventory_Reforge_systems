@@ -50,6 +50,7 @@ void AMyCharacter::BeginPlay()
 			Subsystem->AddMappingContext(MyMappingContext, 0);
 		}
 	}
+	InventoryManagerRef = FindComponentByClass<UInventoryManager>(); //grabbing inventory manager
 }
 // Called every frame
 void AMyCharacter::Tick(float DeltaTime)
@@ -112,7 +113,15 @@ void AMyCharacter::Interact(const FInputActionValue& Value) //interaction
 
 void AMyCharacter::InventoryToggle(const FInputActionValue& Value)
 {
-	InventoryManager->Inventory(true);
+	if (!InventoryManagerRef)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Inventory Ref"))
+		return;
+	}
+	if (!bPlayerInShop)
+	{
+		InventoryManagerRef->Inventory();
+	}
 }
 /*
  * for grabbing objects for physics moving

@@ -72,10 +72,15 @@ void AShopMechanic::Tick(float DeltaTime)
 void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 {
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	AMyCharacter* character = Cast<AMyCharacter>(PC->GetPawn());
+	
+	UInventoryManager* inventory = character->FindComponentByClass<UInventoryManager>();
 	
 	if (bPlayerInRange && bShopOpen == false) // turn on the UI
 	{
 		SetupShopSystem();
+		inventory->Inventory();
+		character->bPlayerInShop = true;
 		if (PC) //locking movement and turning cursor on 
 		{
 			PC->SetShowMouseCursor(true);
@@ -90,6 +95,8 @@ void AShopMechanic::InteractPure(AMyCharacter* player) //interaction
 			ShopSystemUIInstance->RemoveFromParent();
 		}
 		bShopOpen = false;
+		character->bPlayerInShop = false;
+		inventory->Inventory();
 		if (PC)
 		{
 			PC->SetIgnoreMoveInput(false);
