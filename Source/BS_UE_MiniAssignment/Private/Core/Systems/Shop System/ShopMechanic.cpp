@@ -175,6 +175,23 @@ void AShopMechanic::UpdateWidgetUI()
 	}
 }
 
+void AShopMechanic::SetShopFilter(EItemType NewFilter)
+{
+	ActiveFilter = NewFilter;
+
+	UScrollBox* Scrollbox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("ShopScrollHolder")));
+	if (Scrollbox)
+	{
+		FillShopItems(Scrollbox);
+	}
+}
+
+void AShopMechanic::FillShopItems(UScrollBox* ScrollBox)
+{
+	if (!ScrollBox || !ItemDataTable) return;
+	
+}
+
 void AShopMechanic::SetupShopSystem()
 {
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();

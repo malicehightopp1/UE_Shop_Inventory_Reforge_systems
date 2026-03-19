@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Core/Systems/Interaction/InteractionInterface.h"
+#include "Core/Systems/Items/ItemData.h"
 #include "GameFramework/Actor.h"
 #include "ShopMechanic.generated.h"
 
+enum class EItemType : uint8;
 class UInventoryManager;
 class UBoxComponent;
 class UWidgetComponent;
@@ -41,6 +43,9 @@ private:
 	UFUNCTION() void RequestSell(FName ItemKey);
 	UFUNCTION() void UpdateWidgetUI();
 
+	UFUNCTION(BlueprintCallable) void SetShopFilter(EItemType NewFilter);
+	UFUNCTION(BlueprintCallable) void FillShopItems(UScrollBox* ScrollBox);
+
 	//Interaction Functions
 	UFUNCTION() void SetupShopSystem();
 	//Overlap Events functions
@@ -66,6 +71,10 @@ private:
 	//UserWidgets
 	UPROPERTY(EditDefaultsOnly, Category = "Shop System | UI") TSubclassOf<UUserWidget> ShopsystemUIClass; //reference to the shop widget
 	UPROPERTY() UUserWidget* ShopSystemUIInstance; //the actual instance, AKA what we spawn
-	
+
+	//reference
 	UPROPERTY() UInventoryManager* inventoryManager;
+
+	//UI Filter
+	UPROPERTY() EItemType ActiveFilter = EItemType::All;
 };

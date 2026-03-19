@@ -13,7 +13,8 @@ enum class EItemType : uint8
 	Armour UMETA(DisplayName = "Armour"),
 	Consumable UMETA(DisplayName = "Consumable"),
 	Accessory UMETA(DisplayName = "Accesory"),
-	Misc UMETA(DisplayName = "Misc")
+	Misc UMETA(DisplayName = "Misc"),
+	All UMETA(DisplayName = "All")
 };
 USTRUCT(BlueprintType)
 struct FItemDataInfo : public FTableRowBase
