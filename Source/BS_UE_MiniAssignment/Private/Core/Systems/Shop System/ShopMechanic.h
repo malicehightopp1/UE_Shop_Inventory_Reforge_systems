@@ -44,7 +44,7 @@ private:
 	UFUNCTION() void UpdateWidgetUI();
 
 	UFUNCTION(BlueprintCallable) void SetShopFilter(EItemType NewFilter);
-	UFUNCTION(BlueprintCallable) void FillShopItems(UScrollBox* ScrollBox);
+	UFUNCTION(BlueprintCallable) void FillShopItems(UScrollBox* ScrollBox, EItemType NewFilter);
 
 	//Interaction Functions
 	UFUNCTION() void SetupShopSystem();

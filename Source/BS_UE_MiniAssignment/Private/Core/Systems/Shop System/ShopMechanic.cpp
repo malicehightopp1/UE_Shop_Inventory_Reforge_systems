@@ -182,14 +182,54 @@ void AShopMechanic::SetShopFilter(EItemType NewFilter)
 	UScrollBox* Scrollbox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("ShopScrollHolder")));
 	if (Scrollbox)
 	{
-		FillShopItems(Scrollbox);
+		//FillShopItems(Scrollbox);
 	}
 }
 
-void AShopMechanic::FillShopItems(UScrollBox* ScrollBox)
+void AShopMechanic::FillShopItems(UScrollBox* ScrollBox, EItemType NewFilter)
 {
 	if (!ScrollBox || !ItemDataTable) return;
-	
+
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	ScrollBox->ClearChildren();
+	for (const FName& RowName : ShopItemNames) //looping through all items to check the Enum types
+	{
+		FItemDataInfo* ItemData = ItemDataTable->FindRow<FItemDataInfo>(RowName, TEXT(""));
+		if (!ItemData) continue;
+
+		// Filter check - skip if not matching active tab
+		if (ActiveFilter != EItemType::All && ItemData->ItemType != ActiveFilter) //checking if its the active filter
+			continue;
+
+		if (ShopItemSlots)
+		{
+			UUserWidget* NewSlot = CreateWidget<UUserWidget>(PC, ShopItemSlots);
+			if (FProperty* Prop = NewSlot->GetClass()->FindPropertyByName(TEXT("ItemKey"))) //setting the values for the slots
+			{
+				FNameProperty* NameProp = CastField<FNameProperty>(Prop);
+				NameProp->SetPropertyValue_InContainer(NewSlot, RowName);
+			}
+
+			FMulticastDelegateProperty* DelegateBuyRequest = FindFProperty<FMulticastDelegateProperty>(NewSlot->GetClass(), TEXT("RequestDispatch"));
+			FMulticastDelegateProperty* DelegateSellRequest = FindFProperty<FMulticastDelegateProperty>(NewSlot->GetClass(), TEXT("RequestSell"));
+
+			if (DelegateBuyRequest)
+			{
+				FScriptDelegate DelegateBuy;
+				DelegateBuy.BindUFunction(this, FName("RequestDispatch"));
+				DelegateBuyRequest->AddDelegate(DelegateBuy, NewSlot);
+			}
+			if (DelegateSellRequest)
+			{
+				FScriptDelegate DelegateSell;
+				DelegateSell.BindUFunction(this, FName("RequestSell"));
+				DelegateSellRequest->AddDelegate(DelegateSell, NewSlot);
+			}
+
+			ScrollBox->AddChild(NewSlot);
+			NewSlot->SetPadding(-12);
+		}
+	}
 }
 
 void AShopMechanic::SetupShopSystem()
@@ -207,6 +247,16 @@ void AShopMechanic::SetupShopSystem()
 			//
 			//Keep in mind this fetch for the scroll box likes to reset the name - causes no Ui to show - go into widget and name the scroll box the name below
 			//
+
+			UScrollBox* AllBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("AllScrollBox")));
+			UScrollBox* WeaponBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("WeaponScrollBox")));
+			UScrollBox* ArmourBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("ArmourScrollBox")));
+			UScrollBox* ConsumableBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("ConsumableScrollBox")));
+			UScrollBox* AccesoryBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("WeaponScrollBox")));
+			UScrollBox* MiscBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("WeaponScrollBox")));
+
+			FillShopItems(AllBox, EItemType::All);
+			FillShopItems(WeaponBox, EItemType::Weapon);
 			UScrollBox* ScrollBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("ShopScrollHolder"))); //getting the scroll box *Spawn location
 			
 			if (ScrollBox && ItemDataTable)
