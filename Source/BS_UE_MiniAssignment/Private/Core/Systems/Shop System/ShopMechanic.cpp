@@ -175,17 +175,6 @@ void AShopMechanic::UpdateWidgetUI()
 	}
 }
 
-void AShopMechanic::SetShopFilter(EItemType NewFilter)
-{
-	ActiveFilter = NewFilter;
-
-	UScrollBox* Scrollbox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("ShopScrollHolder")));
-	if (Scrollbox)
-	{
-		//FillShopItems(Scrollbox);
-	}
-}
-
 void AShopMechanic::FillShopItems(UScrollBox* ScrollBox, EItemType NewFilter)
 {
 	if (!ScrollBox || !ItemDataTable) return;
@@ -198,7 +187,7 @@ void AShopMechanic::FillShopItems(UScrollBox* ScrollBox, EItemType NewFilter)
 		if (!ItemData) continue;
 
 		// Filter check - skip if not matching active tab
-		if (ActiveFilter != EItemType::All && ItemData->ItemType != ActiveFilter) //checking if its the active filter
+		if (NewFilter != EItemType::All && ItemData->ItemType != NewFilter) //checking if its the active filter
 			continue;
 
 		if (ShopItemSlots)
@@ -227,7 +216,7 @@ void AShopMechanic::FillShopItems(UScrollBox* ScrollBox, EItemType NewFilter)
 			}
 
 			ScrollBox->AddChild(NewSlot);
-			NewSlot->SetPadding(-12);
+			//NewSlot->SetPadding(-100);
 		}
 	}
 }
@@ -244,55 +233,22 @@ void AShopMechanic::SetupShopSystem()
 		{
 			ShopSystemUIInstance->AddToViewport();
 			bShopOpen = true;
-			//
-			//Keep in mind this fetch for the scroll box likes to reset the name - causes no Ui to show - go into widget and name the scroll box the name below
-			//
 
+			//grabbing all scroll boxes
 			UScrollBox* AllBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("AllScrollBox")));
 			UScrollBox* WeaponBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("WeaponScrollBox")));
 			UScrollBox* ArmourBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("ArmourScrollBox")));
 			UScrollBox* ConsumableBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("ConsumableScrollBox")));
-			UScrollBox* AccesoryBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("WeaponScrollBox")));
-			UScrollBox* MiscBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("WeaponScrollBox")));
-
+			UScrollBox* AccesoryBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("AccesoryScrollBox")));
+			UScrollBox* MiscBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("MiscScrollBox")));
+			
+			//filling each scroll box with boxes
 			FillShopItems(AllBox, EItemType::All);
 			FillShopItems(WeaponBox, EItemType::Weapon);
-			UScrollBox* ScrollBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("ShopScrollHolder"))); //getting the scroll box *Spawn location
-			
-			if (ScrollBox && ItemDataTable)
-			{
-				ScrollBox->ClearChildren(); //clear out shop before opening
-
-				for(const FName& RowName : ShopItemNames) //reading through names in the data table
-				{
-					if (ShopItemSlots)
-					{
-						UUserWidget* NewSlot = CreateWidget<UUserWidget>(PC, ShopItemSlots); //creating the button ui for each item
-						if (FProperty* Prop = NewSlot->GetClass()->FindPropertyByName(TEXT("ItemKey"))) //set the itemkey 
-						{
-							FNameProperty* NameProp = CastField<FNameProperty>(Prop);
-							NameProp->SetPropertyValue_InContainer(NewSlot, RowName); //setting the name and values to each new slot
-						}
-						FMulticastDelegateProperty* DelegateBuyRequest = FindFProperty<FMulticastDelegateProperty>(NewSlot->GetClass(), TEXT("RequestDispatch")); //getting delegate on each slot
-						FMulticastDelegateProperty* DelegateSellRequest = FindFProperty<FMulticastDelegateProperty>(NewSlot->GetClass(), TEXT("RequestSell"));
-						if (DelegateBuyRequest) //binding buy event to every button when created 
-						{
-							FScriptDelegate DelegateBuy;
-							DelegateBuy.BindUFunction(this, FName("RequestDispatch"));
-							DelegateBuyRequest->AddDelegate(DelegateBuy, NewSlot);
-						}
-						if (DelegateSellRequest)
-						{
-							FScriptDelegate DelegateSell;
-							DelegateSell.BindUFunction(this, FName("RequestSell"));
-							DelegateSellRequest->AddDelegate(DelegateSell, NewSlot);
-						}
-						
-						ScrollBox->AddChild(NewSlot); //adding the button to the scroll box
-						NewSlot->SetPadding(-12);
-					}
-				}
-			}
+			FillShopItems(ArmourBox, EItemType::Armour);
+			FillShopItems(ConsumableBox, EItemType::Consumable);
+			FillShopItems(AccesoryBox, EItemType::Accessory);
+			FillShopItems(MiscBox, EItemType::Misc);
 		}
 }
 #pragma endregion

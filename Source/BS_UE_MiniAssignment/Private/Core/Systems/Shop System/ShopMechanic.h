@@ -43,7 +43,6 @@ private:
 	UFUNCTION() void RequestSell(FName ItemKey);
 	UFUNCTION() void UpdateWidgetUI();
 
-	UFUNCTION(BlueprintCallable) void SetShopFilter(EItemType NewFilter);
 	UFUNCTION(BlueprintCallable) void FillShopItems(UScrollBox* ScrollBox, EItemType NewFilter);
 
 	//Interaction Functions
@@ -74,7 +73,4 @@ private:
 
 	//reference
 	UPROPERTY() UInventoryManager* inventoryManager;
-
-	//UI Filter
-	UPROPERTY() EItemType ActiveFilter = EItemType::All;
 };
