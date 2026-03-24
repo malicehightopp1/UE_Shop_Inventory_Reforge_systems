@@ -88,6 +88,19 @@ bool UInventoryManager::IsInventoryFull()
 	return FindEmptySlotIndex() == -1; //if there is no empty slots check
 }
 
+bool UInventoryManager::ItemSwap(int32 SlotIndexA, int32 SlotIndexB)
+{
+	if (!InventorySlots.IsValidIndex(SlotIndexA)) return false;
+	if (!InventorySlots.IsValidIndex(SlotIndexB)) return false;
+	
+	if(SlotIndexA == SlotIndexB) return false; //if same slot dont do anything
+	
+	InventorySlots.Swap(SlotIndexA, SlotIndexB); //Swap is built in the unreal engine and handles temp variable and swapping
+	
+	OnInventoryChanged.Broadcast(); //update UI
+	return true;
+}
+
 // ========================================================================================================
 // ------ Private helpers ---------------------------------------------------------------------------------
 // ========================================================================================================
@@ -150,9 +163,8 @@ void UInventoryManager::Inventory() //for turning on and off the UI
 		PC->SetIgnoreLookInput(false);
 		PC->SetIgnoreMoveInput(false);
 
-		// FInputModeGameOnly InputMode;
-		// PC->SetInputMode(InputMode);
-		// PC->SetShowMouseCursor(false);
+		FInputModeGameOnly InputMode;
+		PC->SetInputMode(InputMode);
 		return;
 	}
 
@@ -168,9 +180,8 @@ void UInventoryManager::Inventory() //for turning on and off the UI
 			PC->SetIgnoreLookInput(true);
 			PC->SetIgnoreMoveInput(true);
 
-			// FInputModeUIOnly InputMode;
-			// PC->SetInputMode(InputMode);
-			// PC->SetShowMouseCursor(true);
+			FInputModeGameAndUI InputMode;
+			PC->SetInputMode(InputMode);
 		}
 	}
 }

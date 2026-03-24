@@ -40,6 +40,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Components|Inventory") bool Hasitem(FName ItemRowName, int32 Quantity = 1); //checking if the player has the item *FOR STACKING*
 	UFUNCTION(BLueprintCallable, Category="Components|Inventory") int32 GetItemQuantity(FName ItemRowName);
 	UFUNCTION(BlueprintCallable, Category="Components|Inventory") bool IsInventoryFull();
+	UFUNCTION(BlueprintCallable, Category="Components|Inventory") bool ItemSwap(int32 SlotIndexA, int32 SlotIndexB);
 	
 	// ========================================================================================================
 	// ------ Inventory UI Turn On ----------------------------------------------------------------------------
