@@ -39,7 +39,6 @@ void AMyCharacter::BeginPlay()
 	Super::BeginPlay();
 	if (PlayerWidget) //adding widget to viewport
 	{
-		PlayerWidget->AddToViewport();
 		UE_LOG(LogTemp, Display, TEXT("Widget added to viewport"));
 		CurrencySystem->UpdateCurrencyUI(); //update currency UI right after creating the UI
 	}

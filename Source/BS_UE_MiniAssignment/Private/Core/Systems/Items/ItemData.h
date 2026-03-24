@@ -22,6 +22,7 @@ struct FItemDataInfo : public FTableRowBase
 	GENERATED_BODY()
 	
 	//Might add description *remember that will delete all Data on dataTable* 
+	//Item rarity *for mini assignment* ccould just be another struct
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemDataInfo) FName ItemName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemDataInfo) FText ItemDescription; //this might be crashing Unreal 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemDataInfo) int32 ItemId;
