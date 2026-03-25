@@ -10,6 +10,7 @@
 #include "Components/WidgetComponent.h"
 #include "Core/Systems/Interaction/InteractionInterface.h"
 #include "Core/Systems/Inventory/InventoryManager.h"
+#include "Core/Systems/Inventory/ItemPickup.h"
 #include "Core/Systems/Items/Item.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -191,7 +192,9 @@ void AMyCharacter::PerformLookTrace()
 	bool bHit = GetWorld()->LineTraceSingleByChannel(
 		Hit, Start, End, ECC_Visibility, Params);
 
-	if (bHit && Hit.GetActor() && 
+	AItemPickup* HitPickup = Cast<AItemPickup>(Hit.GetActor());
+	
+	if (bHit && HitPickup && 
 		Hit.GetActor()->GetClass()->ImplementsInterface(UInteractInterface::StaticClass()))
 	{
 		PlayerInteractionActor = Hit.GetActor();
