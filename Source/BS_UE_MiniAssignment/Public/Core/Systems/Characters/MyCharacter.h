@@ -30,6 +30,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player | Components")
 	FORCEINLINE UBPC_Currencysystem* GetCurrencySystem() const {return CurrencySystem;}
 	UPROPERTY(EditDefaultsOnly, Category = "Player | Components") bool bPlayerInShop;
+	UPROPERTY(EditDefaultsOnly, Category = "Player") UInventoryManager* InventoryManagerRef;
+	UPROPERTY(EditDefaultsOnly, Category = "Player | Components") TSubclassOf<UUserWidget> PlayerInteraction;
+	UPROPERTY() UUserWidget* PlayerInteractionWidget;
+	
+	UPROPERTY() AActor* PlayerInteractionActor;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -42,7 +48,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 private:
 	UPROPERTY() UBPC_Currencysystem* CurrencySystem;
-	UPROPERTY(EditDefaultsOnly, Category = "Player") UInventoryManager* InventoryManagerRef;
+	UFUNCTION() void PerformLookTrace();
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// functions - Locomotion

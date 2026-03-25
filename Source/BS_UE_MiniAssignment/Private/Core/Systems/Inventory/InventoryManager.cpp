@@ -8,7 +8,7 @@
 
 UInventoryManager::UInventoryManager()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 	
 }
 

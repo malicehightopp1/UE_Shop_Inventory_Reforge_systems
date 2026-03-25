@@ -19,5 +19,6 @@ public:
 	//UFUNCTION(BlueprintNativeEvent, Category = "Interact") void Interact(AMyCharacter* player); //its gonna be looking for a blueprint override of this function
 	
 	UFUNCTION() virtual void InteractPure(AMyCharacter* player) = 0; //C++ only function
+	UFUNCTION(blueprintNativeEvent, BlueprintCallable) FText GetInteractText(); 
 };
 

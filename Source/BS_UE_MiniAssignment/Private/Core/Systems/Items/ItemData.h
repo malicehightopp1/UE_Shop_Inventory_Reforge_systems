@@ -31,6 +31,7 @@ struct FItemDataInfo : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemDataInfo) UTexture2D* ItemTexture;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemDataInfo) bool bIsStackable;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemDataInfo) EItemType ItemType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ItemDataInfo) UStaticMesh* ItemMesh;
 };
 UCLASS()
 class UItemData : public UPrimaryDataAsset

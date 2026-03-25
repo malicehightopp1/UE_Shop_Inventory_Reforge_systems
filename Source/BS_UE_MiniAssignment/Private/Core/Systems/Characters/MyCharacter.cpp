@@ -5,16 +5,15 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Blueprint/WidgetBlueprintLibrary.h"
-#include "Blueprint/WidgetLayoutLibrary.h"
 #include "Camera/CameraComponent.h"
-#include "Components/CanvasPanel.h"
+#include "Components/TextBlock.h"
 #include "Components/WidgetComponent.h"
 #include "Core/Systems/Interaction/InteractionInterface.h"
 #include "Core/Systems/Inventory/InventoryManager.h"
 #include "Core/Systems/Items/Item.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+class UTextBlock;
 // Sets default values
 AMyCharacter::AMyCharacter()
 {
@@ -52,6 +51,22 @@ void AMyCharacter::BeginPlay()
 		}
 	}
 	InventoryManagerRef = FindComponentByClass<UInventoryManager>(); //grabbing inventory manager
+	
+	if (PlayerInteraction) //setting up interaction widget on start
+	{
+		APlayerController* PC = Cast<APlayerController>(Controller);
+		
+		if (PC)
+		{
+			PlayerInteractionWidget = CreateWidget<UUserWidget>(PC, PlayerInteraction);
+			if (PlayerInteractionWidget)
+			{
+				PlayerInteractionWidget->AddToViewport();
+				PlayerInteractionWidget->SetVisibility(ESlateVisibility::Hidden);
+				UE_LOG(LogTemp, Warning, TEXT("Interaction UI Connected"));
+			}
+		}
+	}
 }
 // Called every frame
 void AMyCharacter::Tick(float DeltaTime)
@@ -63,6 +78,8 @@ void AMyCharacter::Tick(float DeltaTime)
 		FVector TargetLocation = CameraComp->GetComponentLocation() + (CameraComp->GetForwardVector() * 200.f);
 		PhysicsHandleComp->SetTargetLocation(TargetLocation);
 	}
+	
+	PerformLookTrace();
 }
 #pragma region Input Setup
 // Called to bind functionality to input
@@ -124,6 +141,7 @@ void AMyCharacter::InventoryToggle(const FInputActionValue& Value)
 		InventoryManagerRef->Inventory();
 	}
 }
+
 /*
  * for grabbing objects for physics moving
  */
@@ -175,6 +193,52 @@ void AMyCharacter::Move(const FInputActionValue& Value)
 		AddMovementInput(GetActorRightVector(), MovementVector.X);
 	}
 }
+
+void AMyCharacter::PerformLookTrace()
+{
+	FHitResult Hit;
+	FVector Start = CameraComp->GetComponentLocation();
+	FVector End = Start + (CameraComp->GetForwardVector() * 300.f);
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this);
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel(
+		Hit, Start, End, ECC_Visibility, Params);
+
+	if (bHit && Hit.GetActor() && 
+		Hit.GetActor()->GetClass()->ImplementsInterface(UInteractInterface::StaticClass()))
+	{
+		PlayerInteractionActor = Hit.GetActor();
+
+		// Get item name from interface
+		FText ItemText = IInteractInterface::Execute_GetInteractText(PlayerInteractionActor);
+
+		// Show and update the widget
+		if (PlayerInteractionWidget)
+		{
+			PlayerInteractionWidget->SetVisibility(ESlateVisibility::Visible);
+
+			// Find the text block and set it
+			UTextBlock* Label = Cast<UTextBlock>(
+				PlayerInteractionWidget->GetWidgetFromName(TEXT("InteractionText")));
+			if (Label)
+			{
+				Label->SetText(ItemText);
+			}
+		}
+	}
+	else
+	{
+		// Nothing in range, hide widget
+		PlayerInteractionActor = nullptr;
+		if (PlayerInteractionWidget)
+		{
+			PlayerInteractionWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+}
+
 void AMyCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
