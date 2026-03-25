@@ -45,6 +45,10 @@ void AItemPickup::InteractPure(AMyCharacter* player)
 		Destroy();
 	}
 }
+FText AItemPickup::GetInteractText_Implementation()
+{
+	return FText::Format(NSLOCTEXT("Pickup", "PickupText", "Pickup {0}"), FText::FromName(ItemInfo.ItemName)); //getting the name of the item and setting it to the text
+}
 
 void AItemPickup::LoaditemData()
 {

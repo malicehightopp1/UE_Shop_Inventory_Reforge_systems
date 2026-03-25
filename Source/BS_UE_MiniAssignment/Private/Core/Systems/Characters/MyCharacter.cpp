@@ -179,21 +179,6 @@ void AMyCharacter::Release()
 		PhysicsHandleComp->ReleaseComponent();
 	}
 }
-#pragma endregion 
-#pragma region Locomotion
-void AMyCharacter::Move(const FInputActionValue& Value)
-{
-	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
-	{
-		// add movement 
-		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
-		AddMovementInput(GetActorRightVector(), MovementVector.X);
-	}
-}
-
 void AMyCharacter::PerformLookTrace()
 {
 	FHitResult Hit;
@@ -238,6 +223,21 @@ void AMyCharacter::PerformLookTrace()
 		}
 	}
 }
+#pragma endregion 
+#pragma region Locomotion
+void AMyCharacter::Move(const FInputActionValue& Value)
+{
+	// input is a Vector2D
+	FVector2D MovementVector = Value.Get<FVector2D>();
+
+	if (Controller != nullptr)
+	{
+		// add movement 
+		AddMovementInput(GetActorForwardVector(), MovementVector.Y);
+		AddMovementInput(GetActorRightVector(), MovementVector.X);
+	}
+}
+
 
 void AMyCharacter::Look(const FInputActionValue& Value)
 {

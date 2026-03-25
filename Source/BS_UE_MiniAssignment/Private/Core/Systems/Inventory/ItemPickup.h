@@ -34,7 +34,8 @@ public:
 	FItemDataInfo ItemInfo; //for caching the data
 	
 	virtual void InteractPure(AMyCharacter* player) override;
-	
+	virtual FText GetInteractText_Implementation() override;
+
 private:
 	
 	void LoaditemData();
