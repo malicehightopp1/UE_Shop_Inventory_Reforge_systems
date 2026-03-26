@@ -30,13 +30,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemPickup") FDataTableRowHandle ItemRowHandle;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ItemPickup | Components") UStaticMeshComponent* ItemMeshComp;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning") int32 ItemQuantity = 1;
+
 	FItemDataInfo ItemInfo; //for caching the data
 	
 	virtual void InteractPure(AMyCharacter* player) override;
 	virtual FText GetInteractText_Implementation() override;
 
-private:
-	
 	void LoaditemData();
+	
 };

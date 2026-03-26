@@ -41,7 +41,7 @@ void AItemPickup::InteractPure(AMyCharacter* player)
 	
 	if (playercharacter)
 	{
-		playercharacter->InventoryManagerRef->AddItemToInventory(ItemRowHandle.RowName, 1);;
+		playercharacter->InventoryManagerRef->AddItemToInventory(ItemRowHandle.RowName, ItemQuantity);
 		Destroy();
 	}
 }

@@ -4,8 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Core/Systems/Items/ItemData.h"
 #include "InventoryManager.generated.h"
 
+
+class AItemPickup;
 
 USTRUCT(BlueprintType)
 struct FInventorySlot //definition of what a inventory slot is
@@ -41,6 +44,8 @@ public:
 	UFUNCTION(BLueprintCallable, Category="Components|Inventory") int32 GetItemQuantity(FName ItemRowName);
 	UFUNCTION(BlueprintCallable, Category="Components|Inventory") bool IsInventoryFull();
 	UFUNCTION(BlueprintCallable, Category="Components|Inventory") bool ItemSwap(int32 SlotIndexA, int32 SlotIndexB);
+	UFUNCTION(BlueprintCallable, Category="Components|Inventory") void DropItem(FName ItemRowName, int32 Quantity, FVector Spawnlocation);
+	FWeaponDataInfo* GetWeaponData(FName ItemRowName);
 	
 	// ========================================================================================================
 	// ------ Inventory UI Turn On ----------------------------------------------------------------------------
@@ -62,9 +67,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory Config") int32 MaxSlots = 20;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory Config") UDataTable* ItemDataTable;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory Config") UDataTable* WeaponDataTable;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory Config") TArray<FInventorySlot> InventorySlots;
-	
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning") TSubclassOf<AItemPickup> ItemPickupClass;
 	// ========================================================================================================
 	// ------ Delegates ---------------------------------------------------------------------------------------
 	// ========================================================================================================

@@ -24,6 +24,7 @@ public:
 	// Sets default values for this character's properties
 	AMyCharacter();
 
+	UFUNCTION() void DropItem(FName ItemRowName);
 	UPROPERTY(VisibleAnywhere) UPhysicsHandleComponent* PhysicsHandleComp; //physics component for items
 	UPROPERTY(EditDefaultsOnly, Category = "Player | Components") UUserWidget* PlayerWidget;
 

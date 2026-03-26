@@ -3,6 +3,7 @@
 
 #include "Core/Systems/Inventory/InventoryManager.h"
 
+#include "ItemPickup.h"
 #include "Blueprint/UserWidget.h"
 #include "Core/Systems/Items/ItemData.h"
 
@@ -99,6 +100,37 @@ bool UInventoryManager::ItemSwap(int32 SlotIndexA, int32 SlotIndexB)
 	
 	OnInventoryChanged.Broadcast(); //update UI
 	return true;
+}
+
+void UInventoryManager::DropItem(FName ItemRowName, int32 Quantity, FVector Spawnlocation)
+{
+	if (!Hasitem(ItemRowName, Quantity)) return;
+
+	RemoveItemFromInventory(ItemRowName, Quantity);
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	FRotator SpawnRotation = FRotator::ZeroRotator;
+
+	AItemPickup* DroppedItem = GetWorld()->SpawnActor<AItemPickup>(ItemPickupClass,
+	Spawnlocation,
+	SpawnRotation,
+	SpawnParams);
+
+	if (DroppedItem)
+	{
+		DroppedItem->ItemRowHandle.DataTable = ItemDataTable;
+		DroppedItem->ItemRowHandle.RowName = ItemRowName;
+		DroppedItem->ItemQuantity = Quantity;
+		DroppedItem->LoaditemData();
+	}
+}
+
+FWeaponDataInfo* UInventoryManager::GetWeaponData(FName ItemRowName) //grabbing W
+{
+	if (!WeaponDataTable) return nullptr;
+	return WeaponDataTable->FindRow<FWeaponDataInfo>(ItemRowName, TEXT(""));
 }
 
 // ========================================================================================================

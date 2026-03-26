@@ -33,6 +33,16 @@ AMyCharacter::AMyCharacter()
 	CurrencySystem = CreateDefaultSubobject<UBPC_Currencysystem>("currencySystem");
 	PlayerWidget = CreateDefaultSubobject<UUserWidget>("PlayerWidget");
 }
+
+void AMyCharacter::DropItem(FName ItemRowName) //dropping item infront of player
+{
+	FVector droplocation = GetActorLocation()
+	+ GetActorForwardVector() * 100.f
+	+ FVector(100,0,-500.f);
+
+	InventoryManagerRef->DropItem(ItemRowName, 1, droplocation);
+}
+
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
