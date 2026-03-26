@@ -216,7 +216,6 @@ void AShopMechanic::FillShopItems(UScrollBox* ScrollBox, EItemType NewFilter)
 			}
 
 			ScrollBox->AddChild(NewSlot);
-			//NewSlot->SetPadding(-100);
 		}
 	}
 }
@@ -241,10 +240,12 @@ void AShopMechanic::SetupShopSystem()
 			UScrollBox* ConsumableBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("ConsumableScrollBox")));
 			UScrollBox* AccesoryBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("AccesoryScrollBox")));
 			UScrollBox* MiscBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("MiscScrollBox")));
+			UScrollBox* QuestBox = Cast<UScrollBox>(ShopSystemUIInstance->GetWidgetFromName(TEXT("QuestScrollBox")));
 			
 			//filling each scroll box with boxes
 			FillShopItems(AllBox, EItemType::All);
 			FillShopItems(WeaponBox, EItemType::Weapon);
+			FillShopItems(QuestBox, EItemType::Quest);
 			FillShopItems(ArmourBox, EItemType::Armour);
 			FillShopItems(ConsumableBox, EItemType::Consumable);
 			FillShopItems(AccesoryBox, EItemType::Accessory);
